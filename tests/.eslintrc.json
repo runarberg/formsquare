@@ -1,0 +1,12 @@
+{
+  "rules": {
+    "no-sparse-arrays": "off",
+    "no-underscore-dangle": "off",
+    "no-unused-vars": [
+      "warn",
+      {
+        "varsIgnorePattern": "^_"
+      }
+    ]
+  }
+}
