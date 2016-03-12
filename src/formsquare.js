@@ -3,7 +3,9 @@ import {any, reduce} from "ramda";
 const digitRE = /^\s*\d+\s*$/;
 
 export function formsquare(form) {
-  return reduce(setValue, null, form);
+  let elements = formElements(form);
+
+  return reduce(setValue, null, elements);
 
   function setValue(obj, input) {
     let name = input.name;
@@ -21,7 +23,7 @@ export function formsquare(form) {
     } else if (type === "checkbox" && !input.checked) {
       if (hasArrayLeaf(path) || any(
         (other) => other.name === name && other !== input,
-        form
+        elements
       )) {
         return nonMember(obj, path);
       }
@@ -51,13 +53,23 @@ export function formsquare(form) {
       (other) => other.name.startsWith(name) &&
         other !== input &&
         other.name.slice(name.length).match(/\[[^\]]\]/),
-      form
+      elements
     );
 
     setLeaf(leaf, attr, value, asObject);
 
     return obj;
   }
+}
+
+function formElements(form) {
+  let elements = [];
+
+  for (let i = 0; i < form.length; i += 1) {
+    elements.push(form[i]);
+  }
+
+  return elements;
 }
 
 function initialize(obj, path) {
