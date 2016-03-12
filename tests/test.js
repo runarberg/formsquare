@@ -481,7 +481,11 @@ function textarea(attributes, content) {
 }
 
 function checkbox(attributes={}) {
-  return input(Object.assign({"type": "checkbox"}, attributes));
+  let el = input(attributes);
+
+  el.type = "checkbox";
+
+  return el;
 }
 
 function input(attributes={}) {
