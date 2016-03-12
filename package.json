@@ -13,7 +13,8 @@
     "lint": "eslint src/*.js tests/*.js",
     "prepublish": "npm run build",
     "test": "browserify -t babelify tests/*.js | tap-closer | smokestack -b firefox | tap-spec",
-    "pretest": "npm run build"
+    "test:build": "npm test",
+    "pretest:build": "npm run build"
   },
   "author": "Rúnar Berg Baugsson Sigríðarson <runarberg@zoho.com>",
   "license": "MIT",
