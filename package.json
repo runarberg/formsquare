@@ -2,7 +2,12 @@
   "name": "formsquare",
   "version": "0.1.0",
   "description": "Serialize html5 forms the smart way",
-  "keywords": ["form", "serialize", "html", "json"],
+  "keywords": [
+    "form",
+    "serialize",
+    "html",
+    "json"
+  ],
   "main": "lib/formsquare.js",
   "scripts": {
     "build": "mkdir -p lib && echo \"export const NAME = \\\"${npm_package_name}\\\";\nexport const VERSION = \\\"${npm_package_version}\\\";\n\" | cat - src/formsquare.js | babel -f src/formsquare.js > lib/formsquare.js",
@@ -29,5 +34,8 @@
     "tap-closer": "^1.0.0",
     "tap-spec": "^4.1.1",
     "tape": "^4.5.0"
+  },
+  "dependencies": {
+    "ramda": "^0.19.1"
   }
 }

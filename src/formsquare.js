@@ -1,7 +1,11 @@
+import {any, reduce} from "ramda";
+
 const digitRE = /^\s*\d+\s*$/;
 
 export function formsquare(form) {
-  return Array.prototype.reduce.call(form, (obj, input) => {
+  return reduce(setValue, null, form);
+
+  function setValue(obj, input) {
     let name = input.name;
     let value = input.value;
     let type = input.type;
@@ -53,7 +57,7 @@ export function formsquare(form) {
     setLeaf(leaf, attr, value, asObject);
 
     return obj;
-  }, null);
+  }
 }
 
 function initialize(obj, path) {
@@ -173,16 +177,6 @@ function fillSparse(node, attr) {
 
 function hasArrayLeaf(path) {
   return typeof path.slice(-1)[0] === "number";
-}
-
-function any(p, arr) {
-  for (let el of arr) {
-    if (p(el)) {
-      return true;
-    }
-  }
-
-  return false;
 }
 
 export default formsquare;
