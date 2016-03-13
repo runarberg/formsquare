@@ -9,15 +9,19 @@
     "json"
   ],
   "main": "lib/formsquare.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/runarberg/formsquare.git"
+  },
   "scripts": {
     "build": "mkdir -p lib && echo \"export const NAME = \\\"${npm_package_name}\\\";\nexport const VERSION = \\\"${npm_package_version}\\\";\n\" | cat - src/formsquare.js | babel -f src/formsquare.js > lib/formsquare.js",
     "prebuild": "npm run lint",
-    "clean": "rm dist/* lib/*",
+    "clean": "rm -fr dist lib",
     "dist": "mkdir -p dist && browserify -s formsquare lib/formsquare.js > dist/formsquare.js",
     "predist": "npm run build",
     "lint": "eslint src/*.js tests/*.js",
     "prepublish": "npm run build",
-    "test": "browserify -t babelify tests/*.js | tap-closer | smokestack -b firefox | tap-spec",
+    "test": "browserify -t babelify tests/*.js | testling | tap-spec",
     "test:build": "npm test",
     "pretest:build": "npm run build"
   },
@@ -30,10 +34,9 @@
     "babelify": "^7.2.0",
     "browserify": "^13.0.0",
     "eslint": "^2.3.0",
-    "smokestack": "^3.4.1",
-    "tap-closer": "^1.0.0",
     "tap-spec": "^4.1.1",
-    "tape": "^4.5.0"
+    "tape": "^4.5.0",
+    "testling": "^1.7.1"
   },
   "dependencies": {
     "ramda": "^0.19.1"
