@@ -1,4 +1,4 @@
-import {any, reduce} from "ramda";
+import {any, concat, contains, filter, reduce} from "ramda";
 
 const digitRE = /^\s*\d+\s*$/;
 
@@ -50,7 +50,7 @@ export function formsquare(form) {
     let leaf = branch(path, obj);
     let attr = path.slice(-1)[0];
     let asObject = typeof attr !== "number" && any(
-      (other) => other.name.startsWith(name) &&
+      (other) => startsWith(name, other.name) &&
         other !== input &&
         other.name.slice(name.length).match(/\[[^\]]\]/),
       elements
@@ -63,13 +63,24 @@ export function formsquare(form) {
 }
 
 function formElements(form) {
-  let elements = [];
+  let elements = form.elements;
 
-  for (let i = 0; i < form.length; i += 1) {
-    elements.push(form[i]);
+  if (
+    !form.id ||
+      typeof window.HTMLFormControlsCollection === "function" &&
+      elements instanceof window.HTMLFormControlsCollection
+  ) {
+    return asArray(elements);
   }
 
-  return elements;
+  // Polyfill for browsers that don't support html5 form attribute.
+  let outside = document.querySelectorAll(`[form="${form.id}"]`);
+  let inside = filter(
+    (el) => contains(el.getAttribute("form"), ["", null, form.id]),
+    asArray(elements)
+  );
+
+  return concat(inside, asArray(outside));
 }
 
 function initialize(obj, path) {
@@ -189,6 +200,24 @@ function fillSparse(node, attr) {
 
 function hasArrayLeaf(path) {
   return typeof path.slice(-1)[0] === "number";
+}
+
+function asArray(elements) {
+  if (Array.from) {
+    return Array.from(elements);
+  } else {
+    let arr = [];
+
+    for (let i = 0; i < elements.length; i += 1) {
+      arr.push(elements[i]);
+    }
+
+    return arr;
+  }
+}
+
+function startsWith(match, string) {
+  return string.slice(0, match.length) === match;
 }
 
 export default formsquare;
