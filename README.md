@@ -67,7 +67,7 @@ value attribute:
 <form id="booleans-form">
   <input type="checkbox" name="[]">
   <input type="checkbox" name="[]" checked>
-  <input type="checkbox" name="[] value="true" checked>
+  <input type="checkbox" name="[]" value="true" checked>
 </form>
 ```
 
