@@ -1,5 +1,5 @@
-import * as pkg from "../lib/formsquare";
-import formsquare from "../lib/formsquare";
+import * as pkg from "../index";
+import formsquare from "../index";
 import test from "tape";
 
 const checked = true;

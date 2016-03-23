@@ -8,16 +8,16 @@
     "html",
     "json"
   ],
-  "main": "lib/formsquare.js",
+  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/runarberg/formsquare.git"
   },
   "scripts": {
-    "build": "mkdir -p lib && echo \"export const NAME = \\\"${npm_package_name}\\\";\nexport const VERSION = \\\"${npm_package_version}\\\";\n\" | cat - src/formsquare.js | babel -f src/formsquare.js > lib/formsquare.js",
+    "build": "mkdir -p lib && echo \"module.exports = require(\\\"./lib/formsquare\\\");\n\nmodule.exports.NAME = \\\"${npm_package_name}\\\";\nmodule.exports.VERSION = \\\"${npm_package_version}\\\";\" > index.js && babel src/ -d lib",
     "prebuild": "npm run lint",
-    "clean": "rm -fr dist lib",
-    "dist": "mkdir -p dist && browserify -s formsquare lib/formsquare.js > dist/formsquare.js",
+    "clean": "rm -fr dist lib index.js",
+    "dist": "mkdir -p dist && browserify -s formsquare index.js > dist/formsquare.js",
     "predist": "npm run build",
     "lint": "eslint src/*.js tests/*.js",
     "prepublish": "npm run build",

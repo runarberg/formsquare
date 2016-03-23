@@ -1,4 +1,6 @@
 import {any, concat, contains, filter, reduce} from "ramda";
+import {asArray, startsWith} from "./utils";
+
 
 const digitRE = /^\s*\d+\s*$/;
 
@@ -200,24 +202,6 @@ function fillSparse(node, attr) {
 
 function hasArrayLeaf(path) {
   return typeof path.slice(-1)[0] === "number";
-}
-
-function asArray(elements) {
-  if (Array.from) {
-    return Array.from(elements);
-  } else {
-    let arr = [];
-
-    for (let i = 0; i < elements.length; i += 1) {
-      arr.push(elements[i]);
-    }
-
-    return arr;
-  }
-}
-
-function startsWith(match, string) {
-  return string.slice(0, match.length) === match;
 }
 
 export default formsquare;
