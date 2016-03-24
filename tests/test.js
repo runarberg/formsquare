@@ -3,6 +3,7 @@ import formsquare from "../index";
 import test from "tape";
 
 const checked = true;
+const disabled = true;
 const selected = true;
 
 test("Named exports", ({equal, ok, plan}) => {
@@ -334,6 +335,54 @@ test("Checkbox arrays", ({deepEqual, plan}) => {
     ]),
     {"name": "booleans", "values": [false, false, false]},
     "Array of booleans as object leaf"
+  );
+});
+
+test("Filter", ({equal, ok, plan}) => {
+  plan(6);
+
+  let someDisabled = form([
+    input({"value": "disabled", disabled}),
+    input({"value": "enabled"}),
+  ]);
+
+  ok(typeof formsquare((x) => x) === "function", "Curry");
+
+  equal(
+    formsquare(someDisabled, (el) => !el.disabled),
+    "enabled",
+    "No disabled"
+  );
+
+  equal(
+    formsquare((el) => !el.disabled)(someDisabled),
+    "enabled",
+    "No disabled -- curry"
+  );
+
+  equal(
+    formsquare(someDisabled, (el) => el.disabled),
+    "disabled",
+    "Only disabled"
+  );
+
+  equal(
+    formsquare(form([
+      input({"class": "shown", "value": "shown"}),
+      input({"class": "hidden", "value": "hidden"}),
+    ]), (el) => !el.classList.contains("hidden")),
+    "shown",
+    "No hidden"
+  );
+
+  equal(
+    formsquare(form([
+      checkbox({"value": "enabled", checked}),
+      checkbox({"value": "disabled", checked, disabled}),
+    ]), (el) => !el.disabled),
+    "enabled",
+    "Does not affect array behavior"
+    // I.e. not ["enabled", "disabled"].
   );
 });
 

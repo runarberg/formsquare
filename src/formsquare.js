@@ -1,11 +1,16 @@
 import {any, concat, contains, filter, reduce} from "ramda";
-import {asArray, startsWith} from "./utils";
+import {asArray, constant, startsWith} from "./utils";
 
 
 const digitRE = /^\s*\d+\s*$/;
 
-export function formsquare(form) {
-  let elements = formElements(form);
+export function formsquare(form, includeEl=constant(true)) {
+  if (typeof form === "function") {
+    // Curry.
+    return (f) => formsquare(f, form);
+  }
+
+  let elements = filter(includeEl, formElements(form));
 
   return reduce(setValue, null, elements);
 

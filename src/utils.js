@@ -12,6 +12,10 @@ export function asArray(elements) {
   }
 }
 
+export function constant(x) {
+  return () => x;
+}
+
 export function startsWith(match, string) {
   return string.slice(0, match.length) === match;
 }
