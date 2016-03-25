@@ -1,5 +1,5 @@
 import {any, concat, contains, filter, reduce} from "ramda";
-import {asArray, constant, startsWith} from "./utils";
+import {asArray, constant, selected, startsWith} from "./utils";
 
 
 const digitRE = /^\s*\d+\s*$/;
@@ -23,6 +23,8 @@ export function formsquare(form, includeEl=constant(true)) {
     if (type === "radio" && !input.checked) {
       // Do nothing.
       return obj;
+    } else if (input.type === "select-multiple") {
+      value = selected(input);
     } else if (type === "number" || type === "range") {
       value = +value;
     } else if (type === "checkbox" && input.getAttribute("value") === null) {

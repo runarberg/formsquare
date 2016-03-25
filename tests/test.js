@@ -124,7 +124,7 @@ test("Objects", ({deepEqual, plan}) => {
 });
 
 test("Form elements", ({deepEqual, equal, plan}) => {
-  plan(6);
+  plan(8);
 
   let loremIpsum = "Lorem ipsum dolar sit amet";
 
@@ -156,6 +156,26 @@ test("Form elements", ({deepEqual, equal, plan}) => {
     ])]),
     {"select": "2"},
     "Select by value"
+  );
+
+  deepEqual(
+    tform([select({"multiple": true}, [
+      option({selected}, "foo"),
+      option({selected}, "bar"),
+      option("baz"),
+    ])]),
+    ["foo", "bar"],
+    "Select multiple"
+  );
+
+  deepEqual(
+    tform([select({"multiple": true}, [
+      option("foo"),
+      option("bar"),
+      option("baz"),
+    ])]),
+    [],
+    "Select multiple -- empty"
   );
 
   equal(
