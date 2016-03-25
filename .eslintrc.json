@@ -79,7 +79,7 @@
       "warn",
       {
         "min": 1,
-        "max": 12
+        "max": 15
       }
     ],
     "id-match": "error",

@@ -1,5 +1,13 @@
-import {any, concat, contains, filter, reduce} from "ramda";
-import {asArray, constant, selected, startsWith} from "./utils";
+import {
+  any,
+  constant,
+  contains,
+  extendUniq,
+  filter,
+  reduce,
+  selectedValues,
+  startsWith,
+} from "./utils";
 
 
 const digitRE = /^\s*\d+\s*$/;
@@ -24,7 +32,7 @@ export function formsquare(form, includeEl=constant(true)) {
       // Do nothing.
       return obj;
     } else if (input.type === "select-multiple") {
-      value = selected(input);
+      value = selectedValues(input);
     } else if (type === "number" || type === "range") {
       value = +value;
     } else if (type === "checkbox" && input.getAttribute("value") === null) {
@@ -79,17 +87,17 @@ function formElements(form) {
       typeof window.HTMLFormControlsCollection === "function" &&
       elements instanceof window.HTMLFormControlsCollection
   ) {
-    return asArray(elements);
+    return elements;
   }
 
   // Polyfill for browsers that don't support html5 form attribute.
   let outside = document.querySelectorAll(`[form="${form.id}"]`);
   let inside = filter(
     (el) => contains(el.getAttribute("form"), ["", null, form.id]),
-    asArray(elements)
+    elements
   );
 
-  return concat(inside, asArray(outside));
+  return extendUniq(inside, outside);
 }
 
 function initialize(obj, path) {
