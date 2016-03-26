@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Formsquare examples</title>
+    <style>
+      .example output {
+        font-family: monospace;
+        white-space: pre;
+      }
+    </style>
+    <script src="../dist/formsquare.js"></script>
+    <script>var formsquare = formsquare.default</script>
+  </head>
+
+  <body>
+    <h1>Formsquare examples</h1>
+
+    <section id="readme-examples">
+      <h2>Readme examples</h2>
+
+      <div class="example" id="readme-example-basic">
+        <h3>Basic</h3>
+        <form>
+          <input name="foo" value="bar">
+          <input name="baz" value="quux" disabled>
+        </form>
+
+        <output></output>
+
+        <script>
+          (function() {
+          var div = document.getElementById("readme-example-basic");
+
+          var form = div.querySelector("form");
+          var obj = formsquare(form, function(el) {
+            return !el.disabled;
+          });
+
+          var output = div.querySelector("output");
+          output.textContent = JSON.stringify(obj);
+          }())
+        </script>
+      </div>
+
+      <div class="example" id="readme-example-curry">
+        <h3>Curry</h3>
+
+        <form>
+          <input value="foo">
+          <input value="bar" disabled>
+        </form>
+
+        <form>
+          <input value="foo" disabled>
+          <input value="bar">
+        </form>
+
+        <output></output>
+
+        <script>
+          (function() {
+          var div = document.getElementById("readme-example-curry");
+          var serialize = formsquare(function(el) {
+            return !el.disabled;
+          });
+
+          var forms = div.querySelectorAll("form");
+
+          var output = div.querySelector("output");
+          output.textContent = [].map.call(forms, serialize)
+            .map(JSON.stringify)
+            .join("\n");
+          }())
+        </script>
+      </div>
+
+      <div class="example" id="readme-example-empty">
+        <h3>Empty</h3>
+
+        <form></form>
+
+        <output></output>
+
+        <script>
+          (function() {
+          var div = document.getElementById("readme-example-empty");
+
+          var form = div.querySelector("form");
+          var obj = formsquare(form);
+
+          var output = div.querySelector("output");
+          output.textContent = JSON.stringify(obj);
+          }())
+        </script>
+      </div>
+
+      <div class="example" id="readme-example-singleton">
+        <h3>Singleton</h3>
+
+        <form>
+          <input type="number" value="42">
+        </form>
+
+        <output></output>
+
+        <script>
+          (function() {
+          var div = document.getElementById("readme-example-singleton");
+
+          var form = div.querySelector("form");
+          var output = div.querySelector("output");
+          var string = JSON.stringify(formsquare(form));
+
+          form[0].type = "text";
+          string += "\n" + JSON.stringify(formsquare(form));
+
+          output.textContent = string;
+          }())
+        </script>
+      </div>
+
+      <div class="example" id="readme-example-checkboxes">
+        <h3>Checkboxes</h3>
+
+        <form>
+          <input type="checkbox" name="[]">
+          <input type="checkbox" name="[]" checked>
+        </form>
+
+        <output></output>
+
+        <script>
+          (function() {
+          var div = document.getElementById("readme-example-checkboxes");
+
+          var form = div.querySelector("form");
+          var output = div.querySelector("output");
+          var string = JSON.stringify(formsquare(form));
+
+          form[0].value = "false";
+          form[1].value = "on"
+          string += "\n" + JSON.stringify(formsquare(form));
+
+          output.textContent = string;
+          }())
+        </script>
+      </div>
+    </section>
+  </body>
+</html>
