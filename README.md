@@ -14,18 +14,53 @@ npm install --save formsquare
 
 ### Usage
 
+#### ES6
+
+```js
+import formsquare from "formsquare";
+
+formsquare(form, filter);
+
+// or
+var serialize = formsquare(filter);
+serialize(form);
 ```
-formsquare(form: HTMLFormElement[, filter: (Node -> Boolean)]) -> Null|Boolean|Number|String|Array|Object
-formsquare(filter: (Node -> Boolean)) -> (form: HTMLFormElement) -> Null|Boolean|Number|String|Array|Object
+
+Where form is an `HTMLFormElement` for example `document.forms[0]` and
+filter is an optional predicate function for example
+`(el) => !el.disabled` that determines witch form elements to include.
+
+#### commonjs
+
+Same as above expept import with:
+
+```js
+var formsquare = require("formsquare").formsquare;
 ```
+
+#### HTML
+
+Download the [full][full-code] or [minified][minified-code] code and
+include this in your HTML file:
+
+```html
+<script src="formsquare.js"></script>
+```
+
+Than you can use `formsquare.formsquare` like above in your scripts.
+
+#### Examples
+
+[See below.](#examples)
 
 What makes formsquare different
 -------------------------------
 
 Formsquare is yet another [square bracket notation][1] form to
-javascript object serializer, but smarter. Formsquare tries
-to be smart about your form structure and keep open most possible
-mappings to valid JSON objects.
+javascript object serializer, but smarter. Formsquare tries to be
+smart about your form structure and keep open most possible mappings
+to valid JSON objects. Formsquare will also take note of your HTML5
+[form attributes][2], even in [Internet Explorer][3].
 
 For the first part formsquare tries to retain the types of your form
 elements.
@@ -189,4 +224,8 @@ at any of these:
 * [form-serializer](https://www.npmjs.com/package/form-serializer)
 * [get-form-data](https://www.npmjs.com/package/get-form-data)
 
+[full-code]: https://raw.githubusercontent.com/runarberg/formsquare/dist/dist/formsquare.js
+[minified-code]: https://raw.githubusercontent.com/runarberg/formsquare/dist/dist/formsquare.min.js
 [1]: https://www.w3.org/TR/html-json-forms/
+[2]: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-form
+[3]: http://caniuse.com/#feat=form-attribute
