@@ -26,9 +26,9 @@ var serialize = formsquare(filter);
 serialize(form);
 ```
 
-Where form is an `HTMLFormElement` for example `document.forms[0]` and
-filter is an optional predicate function for example
-`(el) => !el.disabled` that determines witch form elements to include.
+Where `form` is an `HTMLFormElement` (like `document.forms[0]`) and
+`filter` is an optional predicate function (like `(el) =>
+!el.disabled`) that determines which form elements to include.
 
 #### commonjs
 
