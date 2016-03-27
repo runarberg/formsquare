@@ -32,10 +32,10 @@ Where `form` is an `HTMLFormElement` (like `document.forms[0]`) and
 
 #### commonjs
 
-Same as above expept import with:
+Same as above except import with:
 
 ```js
-var formsquare = require("formsquare").formsquare;
+var formsquare = require("formsquare").default;
 ```
 
 #### HTML
@@ -47,11 +47,17 @@ include this in your HTML file:
 <script src="formsquare.js"></script>
 ```
 
-Than you can use `formsquare.formsquare` like above in your scripts.
+**Note:** This will export the entire module under the namespace
+`formsquare`. So in order to use the default export, put this in your
+script:
 
-#### Examples
+```
+formsquare = formsquare.default;
+```
 
-[See below.](#examples)
+Then you can use the `formsquare` function intuitively.
+
+#### [More examples below](#examples)
 
 What makes formsquare different
 -------------------------------
