@@ -2,7 +2,7 @@
 module.exports = require("./lib/formsquare");
 
 module.exports.NAME = "formsquare";
-module.exports.VERSION = "0.3.1";
+module.exports.VERSION = "0.4.0";
 
 },{"./lib/formsquare":2}],2:[function(require,module,exports){
 "use strict";
@@ -10,6 +10,9 @@ module.exports.VERSION = "0.3.1";
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
 exports.formsquare = formsquare;
 
 var _utils = require("./utils");
@@ -32,17 +35,14 @@ function formsquare(form) {
 
   function setValue(obj, input) {
     var name = input.name;
-    var value = input.value;
     var type = input.type;
+    var value = input.value;
+
     var path = getPath(name);
 
     if (type === "radio" && !input.checked) {
       // Do nothing.
       return obj;
-    } else if (input.type === "select-multiple") {
-      value = (0, _utils.selectedValues)(input);
-    } else if (type === "number" || type === "range") {
-      value = +value;
     } else if (type === "checkbox" && input.getAttribute("value") === null) {
       value = input.checked;
     } else if (type === "checkbox" && !input.checked) {
@@ -52,6 +52,8 @@ function formsquare(form) {
         return nonMember(obj, path);
       }
       value = null;
+    } else {
+      value = getValue(input);
     }
 
     if (path.length === 0) {
@@ -81,6 +83,68 @@ function formsquare(form) {
 
     return obj;
   }
+}
+
+function getValue(input) {
+  if (input.type === "select-multiple") {
+    return (0, _utils.selectedValues)(input);
+  }
+
+  if (input.type === "number" || input.type === "range") {
+    return +input.value;
+  }
+
+  if ((0, _utils.contains)(input.getAttribute("type"), ["date", "datetime-local", "month"])) {
+    var date = new Date(input.value);
+
+    if (date.toString() === "Invalid Date") {
+      return input.value;
+    }
+
+    return date;
+  }
+
+  if (input.getAttribute("type") === "week") {
+    // Get the date that starts this week.
+    if (!input.value.match(/^\s*\d+\s*-W\s*\d+\s*$/)) {
+      // Invalid week string.
+      return input.value;
+    }
+
+    var _input$value$split = input.value.split("-W");
+
+    var _input$value$split2 = _slicedToArray(_input$value$split, 2);
+
+    var year = _input$value$split2[0];
+    var week = _input$value$split2[1];
+
+
+    if (week <= 0 || week > 53) {
+      // Invalid week string.
+      return input.value;
+    }
+
+    year = parseInt(year, 10);
+    week = parseInt(week, 10);
+
+    var naive = new Date(year, 0, 1 + (week - 1) * 7);
+    var dayOfWeek = naive.getDay();
+    var _date = naive;
+
+    if (dayOfWeek <= 4) {
+      _date.setDate(naive.getDate() - naive.getDay() + 1);
+    } else {
+      _date.setDate(naive.getDate() + 8 - naive.getDay());
+    }
+
+    if (_date.toString() === "Invalid Date") {
+      return input.value;
+    }
+
+    return _date;
+  }
+
+  return input.value;
 }
 
 function formElements(form) {
