@@ -74,6 +74,9 @@ elements.
 * Inputs of type `checkbox` with no explicit value attribute get the
   value `true` if it is checked, and `false` otherwise.
 * Inputs of type `number` and `range` gets it value casted to `number`.
+* Inputs of type `month`, `week`, `date`, and `datetime-local` will
+  get their values as a `Date` object. Invalid dates, retain their
+  original values.
 * All other elements get their value as `string`.
 
 Secondly formsquare won’t force you into a root object.

@@ -16,12 +16,12 @@ test("Named exports", ({equal, ok, plan}) => {
 });
 
 test("Types", ({deepEqual, equal, plan}) => {
-  plan(4);
+  plan(9);
 
   deepEqual(tform(), null, "null (empty form)");
 
   equal(
-    tform([input({"type": "number", "value": 1})]),
+    tform([input({"type": "number", "value": "1"})]),
     1,
     "Number"
   );
@@ -36,6 +36,36 @@ test("Types", ({deepEqual, equal, plan}) => {
     tform([input({"type": "text", "value": "1"})]),
     "1",
     "String"
+  );
+
+  deepEqual(
+    tform([input({"type": "month", "value": "1989-03"})]),
+    new Date("1989-03"),
+    "Month"
+  );
+
+  deepEqual(
+    tform([input({"type": "week", "value": "2009-W01"})]),
+    new Date("2008-12-29"),
+    "Week"
+  );
+
+  equal(
+    tform([input({"type": "week", "value": "1989-10"})]),
+    "1989-10",
+    "Week -- invalid"
+  );
+
+  deepEqual(
+    tform([input({"type": "date", "value": "1989-03-10"})]),
+    new Date("1989-03-10"),
+    "Date"
+  );
+
+  deepEqual(
+    tform([input({"type": "datetime-local", "value": "1989-03-10T21:00:44"})]),
+    new Date("1989-03-10T21:00:44"),
+    "Datetime-local"
   );
 });
 

@@ -23,18 +23,12 @@ export function formsquare(form, includeEl=constant(true)) {
   return reduce(setValue, null, elements);
 
   function setValue(obj, input) {
-    let name = input.name;
-    let value = input.value;
-    let type = input.type;
+    let {name, type, value} = input;
     let path = getPath(name);
 
     if (type === "radio" && !input.checked) {
       // Do nothing.
       return obj;
-    } else if (input.type === "select-multiple") {
-      value = selectedValues(input);
-    } else if (type === "number" || type === "range") {
-      value = +value;
     } else if (type === "checkbox" && input.getAttribute("value") === null) {
       value = input.checked;
     } else if (type === "checkbox" && !input.checked) {
@@ -45,6 +39,8 @@ export function formsquare(form, includeEl=constant(true)) {
         return nonMember(obj, path);
       }
       value = null;
+    } else {
+      value = getValue(input);
     }
 
     if (path.length === 0) {
@@ -77,6 +73,62 @@ export function formsquare(form, includeEl=constant(true)) {
 
     return obj;
   }
+}
+
+function getValue(input) {
+  if (input.type === "select-multiple") {
+    return selectedValues(input);
+  }
+
+  if (input.type === "number" || input.type === "range") {
+    return +input.value;
+  }
+
+  if (contains(input.getAttribute("type"), ["date", "datetime-local", "month"])) {
+    let date = new Date(input.value);
+
+    if (date.toString() === "Invalid Date") {
+      return input.value;
+    }
+
+    return date;
+  }
+
+  if (input.getAttribute("type") === "week") {
+    // Get the date that starts this week.
+    if (!input.value.match(/^\s*\d+\s*-W\s*\d+\s*$/)) {
+      // Invalid week string.
+      return input.value;
+    }
+
+    let [year, week] = input.value.split("-W");
+
+    if (week <= 0 || week > 53) {
+      // Invalid week string.
+      return input.value;
+    }
+
+    year = parseInt(year, 10);
+    week = parseInt(week, 10);
+
+    let naive = new Date(year, 0, 1 + (week - 1) * 7);
+    let dayOfWeek = naive.getDay();
+    let date = naive;
+
+    if (dayOfWeek <= 4) {
+      date.setDate(naive.getDate() - naive.getDay() + 1);
+    } else {
+      date.setDate(naive.getDate() + 8 - naive.getDay());
+    }
+
+    if (date.toString() === "Invalid Date") {
+      return input.value;
+    }
+
+    return date;
+  }
+
+  return input.value;
 }
 
 function formElements(form) {
