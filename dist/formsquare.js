@@ -2,7 +2,7 @@
 module.exports = require("./lib/formsquare");
 
 module.exports.NAME = "formsquare";
-module.exports.VERSION = "0.4.0";
+module.exports.VERSION = "0.5.0";
 
 },{"./lib/formsquare":2}],2:[function(require,module,exports){
 "use strict";
@@ -127,14 +127,14 @@ function getValue(input) {
     year = parseInt(year, 10);
     week = parseInt(week, 10);
 
-    var naive = new Date(year, 0, 1 + (week - 1) * 7);
-    var dayOfWeek = naive.getDay();
+    var naive = new Date(Date.UTC(year, 0, 1 + (week - 1) * 7));
+    var dayOfWeek = naive.getUTCDay();
     var _date = naive;
 
     if (dayOfWeek <= 4) {
-      _date.setDate(naive.getDate() - naive.getDay() + 1);
+      _date.setUTCDate(naive.getUTCDate() - naive.getUTCDay() + 1);
     } else {
-      _date.setDate(naive.getDate() + 8 - naive.getDay());
+      _date.setUTCDate(naive.getUTCDate() + 8 - naive.getUTCDay());
     }
 
     if (_date.toString() === "Invalid Date") {
@@ -148,6 +148,10 @@ function getValue(input) {
 }
 
 function formElements(form) {
+  if (form instanceof NodeList || Array.isArray(form)) {
+    return (0, _utils.flatMap)(formElements, form);
+  }
+
   var elements = form.elements;
 
   if (!form.id || typeof window.HTMLFormControlsCollection === "function" && elements instanceof window.HTMLFormControlsCollection) {
@@ -290,6 +294,7 @@ exports.constant = constant;
 exports.contains = contains;
 exports.extendUniq = extendUniq;
 exports.filter = filter;
+exports.flatMap = flatMap;
 exports.reduce = reduce;
 exports.selectedValues = selectedValues;
 exports.startsWith = startsWith;
@@ -346,6 +351,19 @@ function filter(p, arr) {
   }
 
   return filtered;
+}
+
+function flatMap(fn, arr) {
+  return reduce(function (acc, el) {
+    var collection = fn(el);
+    var len = collection.length;
+
+    for (var i = 0; i < len; i += 1) {
+      acc.push(collection[i]);
+    }
+
+    return acc;
+  }, [], arr);
 }
 
 function map(fn, arr) {
