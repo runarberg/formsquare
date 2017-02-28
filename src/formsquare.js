@@ -111,14 +111,14 @@ function getValue(input) {
     year = parseInt(year, 10);
     week = parseInt(week, 10);
 
-    let naive = new Date(year, 0, 1 + (week - 1) * 7);
-    let dayOfWeek = naive.getDay();
+    let naive = new Date(Date.UTC(year, 0, 1 + (week - 1) * 7));
+    let dayOfWeek = naive.getUTCDay();
     let date = naive;
 
     if (dayOfWeek <= 4) {
-      date.setDate(naive.getDate() - naive.getDay() + 1);
+      date.setUTCDate(naive.getUTCDate() - naive.getUTCDay() + 1);
     } else {
-      date.setDate(naive.getDate() + 8 - naive.getDay());
+      date.setUTCDate(naive.getUTCDate() + 8 - naive.getUTCDay());
     }
 
     if (date.toString() === "Invalid Date") {
