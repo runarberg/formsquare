@@ -4,6 +4,7 @@ import {
   contains,
   extendUniq,
   filter,
+  flatMap,
   reduce,
   selectedValues,
   startsWith,
@@ -132,6 +133,13 @@ function getValue(input) {
 }
 
 function formElements(form) {
+  if (
+    form instanceof NodeList ||
+      Array.isArray(form)
+  ) {
+    return flatMap(formElements, form);
+  }
+
   let elements = form.elements;
 
   if (

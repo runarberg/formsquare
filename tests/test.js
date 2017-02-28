@@ -436,6 +436,49 @@ test("Filter", ({equal, ok, plan}) => {
   );
 });
 
+test("Collections of forms", ({deepEqual, plan}) => {
+  plan(3);
+
+  deepEqual(
+    formsquare(crel("div", [
+      form([
+        input({"name": "foo", "value": "bar"}),
+      ]),
+      form([
+        input({"name": "baz", "value": "quux"}),
+      ]),
+    ]).querySelectorAll("form")),
+    {"foo": "bar", "baz": "quux"},
+    "Simple object"
+  );
+
+  deepEqual(
+    formsquare(crel("div", [
+      form([
+        input({"type": "number", "value": "5"}),
+      ]),
+      form([
+        input({"type": "number", "value": "42"}),
+      ]),
+    ]).querySelectorAll("form")),
+    [5, 42],
+    "Merge arrays cross forms"
+  );
+
+  deepEqual(
+    formsquare([
+      form([
+        input({"name": "foo", "value": "bar"}),
+      ]),
+      form([
+        input({"name": "baz", "value": "quux"}),
+      ]),
+    ]),
+    {"foo": "bar", "baz": "quux"},
+    "An array of forms"
+  );
+});
+
 test("html-json-forms examples", ({deepEqual, plan}) => {
   plan(9);
 

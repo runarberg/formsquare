@@ -146,6 +146,36 @@
           }())
         </script>
       </div>
+
+      <div class="example" id="readme-example-form-collection">
+        <h3>Collections of forms</h3>
+
+        <form>
+          <input type="number" name="foo" value="2">
+          <input type="number" name="bar" value="5">
+        </form>
+
+        <form>
+          <input type="number" name="foo" value="42">
+        </form>
+
+        <output></output>
+
+        <script>
+          (function() {
+          var div = document.getElementById("readme-example-form-collection");
+
+          var forms = div.querySelectorAll("form");
+          var output = div.querySelector("output");
+          var string = "";
+          string += JSON.stringify(formsquare(forms));
+          string += "\n";
+          string += JSON.stringify([...forms].map(formsquare(() => true)));
+
+          output.textContent = string;
+          }())
+        </script>
+      </div>
     </section>
   </body>
 </html>

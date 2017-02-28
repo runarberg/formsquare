@@ -62,11 +62,12 @@ Then you can use the `formsquare` function intuitively.
 What makes formsquare different
 -------------------------------
 
-Formsquare is yet another [square bracket notation][1] form to
+Formsquare is yet another [square bracket notation][spec] form to
 javascript object serializer, but smarter. Formsquare tries to be
 smart about your form structure and keep open most possible mappings
-to valid JSON objects. Formsquare will also take note of your HTML5
-[form attributes][2], even in [Internet Explorer][3].
+to valid JSON objects. Formsquare will also take note of your
+HTML5 [form attributes][mdn/input#attr-form], even in
+[Internet Explorer][caniuse#form-attribute].
 
 For the first part formsquare tries to retain the types of your form
 elements.
@@ -184,6 +185,30 @@ formsquare(singletonForm);
 // "42"
 ```
 
+### Collections of forms
+
+You can pass in an array or a [node list][mdn#node-list] of forms and
+it will be handled as a single form.
+
+```html
+<form>
+  <input type="number" name="foo" value="2">
+  <input type="number" name="bar" value="5">
+</form>
+
+<form>
+  <input type="number" name="foo" value="42">
+</form>
+```
+
+```js
+formsquare(document.forms);
+// {"foo": [2, 42], "bar": 5}
+
+[...document.forms].map(formsquare(() => true));
+// [{"foo": 2, "bar": 5}, {"foo": 42}]
+```
+
 ### Checkboxes
 
 If your form needs a list of booleans, you only need to omit the value
@@ -235,6 +260,8 @@ at any of these:
 
 [full-code]: https://raw.githubusercontent.com/runarberg/formsquare/dist/dist/formsquare.js
 [minified-code]: https://raw.githubusercontent.com/runarberg/formsquare/dist/dist/formsquare.min.js
-[1]: https://www.w3.org/TR/html-json-forms/
-[2]: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-form
-[3]: http://caniuse.com/#feat=form-attribute
+
+[caniuse#form-attribute]: http://caniuse.com/#feat=form-attribute
+[mdn/input#attr-form]: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-form
+[mdn/node-list]: https://developer.mozilla.org/en-US/docs/Web/API/NodeList
+[spec]: https://www.w3.org/TR/html-json-forms/

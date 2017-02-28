@@ -51,6 +51,19 @@ export function filter(p, arr) {
   return filtered;
 }
 
+export function flatMap(fn, arr) {
+  return reduce((acc, el) => {
+    let collection = fn(el);
+    let len = collection.length;
+
+    for (let i = 0; i < len; i += 1) {
+      acc.push(collection[i]);
+    }
+
+    return acc;
+  }, [], arr);
+}
+
 function map(fn, arr) {
   let mapped = [];
   let len = arr.length;
