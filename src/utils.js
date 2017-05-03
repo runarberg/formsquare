@@ -64,7 +64,7 @@ export function flatMap(fn, arr) {
   }, [], arr);
 }
 
-function map(fn, arr) {
+export function map(fn, arr) {
   let mapped = [];
   let len = arr.length;
 

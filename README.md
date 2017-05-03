@@ -246,6 +246,33 @@ formsquare(checkboxForm);
 // []
 ```
 
+### Files
+
+Inputs with the type of “file” (`<input type="file">`) result in a
+promise containing the file object. File inputs with `multiple` set to
+true will result in promise of an array of such objects.
+
+```html
+<form>
+  <input type="file">
+</form>
+```
+
+Granted that a user uploaded the file `foo.txt` conatining the text
+`foo`:
+
+```js
+formsquare(document.forms[0]).then((file) => {
+  console.log(file);
+});
+
+// {
+//   "body": "Zm9v",
+//   "name": "foo.txt",
+//   "type": "text/plain"
+// }
+```
+
 Alternatives
 ------------
 

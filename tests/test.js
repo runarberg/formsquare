@@ -16,7 +16,7 @@ test("Named exports", ({equal, ok, plan}) => {
 });
 
 test("Types", ({deepEqual, equal, plan}) => {
-  plan(9);
+  plan(10);
 
   deepEqual(tform(), null, "null (empty form)");
 
@@ -67,6 +67,11 @@ test("Types", ({deepEqual, equal, plan}) => {
     new Date("1989-03-10T21:00:44"),
     "Datetime-local"
   );
+
+  // We are not able to test real file input in real browsers:
+  tform([input({"type": "file"})]).then((file) => {
+    deepEqual(file, null, "File");
+  });
 });
 
 test("Collection types", ({deepEqual, plan}) => {
@@ -154,7 +159,7 @@ test("Objects", ({deepEqual, plan}) => {
 });
 
 test("Form elements", ({deepEqual, equal, plan}) => {
-  plan(8);
+  plan(9);
 
   let loremIpsum = "Lorem ipsum dolar sit amet";
 
@@ -207,6 +212,15 @@ test("Form elements", ({deepEqual, equal, plan}) => {
     [],
     "Select multiple -- empty"
   );
+
+  // We are not able to test real file inputs in real browsers.
+  tform([input({"type": "file", "multiple": true})]).then((files) => {
+    deepEqual(
+      files,
+      [],
+      "File input multiple -- empty"
+    );
+  });
 
   equal(
     tform([textarea(loremIpsum)]),
