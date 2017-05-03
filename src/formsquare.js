@@ -5,10 +5,13 @@ import {
   extendUniq,
   filter,
   flatMap,
+  map,
   reduce,
   selectedValues,
   startsWith,
 } from "./utils";
+
+import {readFile} from "./files";
 
 
 const digitRE = /^\s*\d+\s*$/;
@@ -97,6 +100,18 @@ function getValue(input) {
 
   if (input.getAttribute("type") === "week") {
     return getWeek(input.value) || input.getAttribute("value");
+  }
+
+  if (input.type === "file") {
+    if (input.multiple) {
+      if (input.files.length === 0) {
+        return Promise.resolve([]);
+      }
+
+      return Promise.all(map(readFile, input.files));
+    }
+
+    return readFile(input.files[0]);
   }
 
   return input.value;

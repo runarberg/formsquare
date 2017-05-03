@@ -169,6 +169,28 @@
         </script>
       </div>
 
+      <div class="example" id="readme-example-files">
+        <h3>Files</h3>
+
+        <form>
+          <input type="file" multiple>
+        </form>
+
+        <output></output>
+
+        <script>
+          (function() {
+          var div = document.getElementById("readme-example-files");
+
+          var form = div.querySelector("form");
+          var output = div.querySelector("output");
+          formsquare(form).then((data) => {
+            output.textContent = JSON.stringify(data);
+          });
+          }())
+        </script>
+      </div>
+
       <div class="example" id="readme-example-form-collection">
         <h3>Collections of forms</h3>
 
