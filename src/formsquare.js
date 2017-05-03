@@ -96,37 +96,7 @@ function getValue(input) {
   }
 
   if (input.getAttribute("type") === "week") {
-    // Get the date that starts this week.
-    if (!input.value.match(/^\s*\d+\s*-W\s*\d+\s*$/)) {
-      // Invalid week string.
-      return input.value;
-    }
-
-    let [year, week] = input.value.split("-W");
-
-    if (week <= 0 || week > 53) {
-      // Invalid week string.
-      return input.value;
-    }
-
-    year = parseInt(year, 10);
-    week = parseInt(week, 10);
-
-    let naive = new Date(Date.UTC(year, 0, 1 + (week - 1) * 7));
-    let dayOfWeek = naive.getUTCDay();
-    let date = naive;
-
-    if (dayOfWeek <= 4) {
-      date.setUTCDate(naive.getUTCDate() - naive.getUTCDay() + 1);
-    } else {
-      date.setUTCDate(naive.getUTCDate() + 8 - naive.getUTCDay());
-    }
-
-    if (date.toString() === "Invalid Date") {
-      return input.value;
-    }
-
-    return date;
+    return getWeek(input.value) || input.getAttribute("value");
   }
 
   return input.value;
@@ -277,6 +247,40 @@ function fillSparse(node, attr) {
 
 function hasArrayLeaf(path) {
   return typeof path.slice(-1)[0] === "number";
+}
+
+function getWeek(value) {
+  // Get the date that starts this week.
+  if (!value.match(/^\s*\d+\s*-W\s*\d+\s*$/)) {
+    // Invalid week string.
+    return value;
+  }
+
+  let [year, week] = value.split("-W");
+
+  year = parseInt(year, 10);
+  week = parseInt(week, 10);
+
+  if (week <= 0 || week > 53) {
+    // Invalid week string.
+    return value;
+  }
+
+  let naive = new Date(Date.UTC(year, 0, 1 + (week - 1) * 7));
+  let dayOfWeek = naive.getUTCDay();
+  let date = naive;
+
+  if (dayOfWeek <= 4) {
+    date.setUTCDate(naive.getUTCDate() - naive.getUTCDay() + 1);
+  } else {
+    date.setUTCDate(naive.getUTCDate() + 8 - naive.getUTCDay());
+  }
+
+  if (date.toString() === "Invalid Date") {
+    return value;
+  }
+
+  return date;
 }
 
 export default formsquare;

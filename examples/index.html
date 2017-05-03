@@ -147,6 +147,28 @@
         </script>
       </div>
 
+      <div class="example" id="readme-example-week">
+        <h3>Week</h3>
+
+        <form>
+          <input type="week" value="2017-W14">
+        </form>
+
+        <output></output>
+
+        <script>
+          (function() {
+          var div = document.getElementById("readme-example-week");
+
+          var form = div.querySelector("form");
+          var output = div.querySelector("output");
+          var string = JSON.stringify(formsquare(form));
+
+          output.textContent = string;
+          }())
+        </script>
+      </div>
+
       <div class="example" id="readme-example-form-collection">
         <h3>Collections of forms</h3>
 
