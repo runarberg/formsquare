@@ -2,9 +2,51 @@
 module.exports = require("./lib/formsquare");
 
 module.exports.NAME = "formsquare";
-module.exports.VERSION = "0.5.0";
+module.exports.VERSION = "0.6.0";
 
-},{"./lib/formsquare":2}],2:[function(require,module,exports){
+},{"./lib/formsquare":3}],2:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
+exports.readFile = readFile;
+function readFile(file) {
+  if (!file) {
+    return Promise.resolve(null);
+  }
+
+  var reader = new FileReader();
+  var loaded = new Promise(function (resolve, reject) {
+    reader.addEventListener("load", resolve, false);
+    reader.addEventListener("error", reject, false);
+    reader.addEventListener("abort", reject, false);
+  });
+
+  reader.readAsDataURL(file);
+
+  return loaded.then(function (event) {
+    // data:text/plain;base64,Zm9vCg
+
+    var _event$target$result$ = event.target.result.split(";");
+
+    var _event$target$result$2 = _slicedToArray(_event$target$result$, 2);
+
+    var type = _event$target$result$2[0];
+    var body = _event$target$result$2[1];
+
+
+    return {
+      "body": body.slice(7),
+      "name": file.name,
+      "type": type.slice(5)
+    };
+  });
+}
+},{}],3:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -16,6 +58,8 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 exports.formsquare = formsquare;
 
 var _utils = require("./utils");
+
+var _files = require("./files");
 
 var digitRE = /^\s*\d+\s*$/;
 
@@ -105,43 +149,19 @@ function getValue(input) {
   }
 
   if (input.getAttribute("type") === "week") {
-    // Get the date that starts this week.
-    if (!input.value.match(/^\s*\d+\s*-W\s*\d+\s*$/)) {
-      // Invalid week string.
-      return input.value;
+    return getWeek(input.value) || input.getAttribute("value");
+  }
+
+  if (input.type === "file") {
+    if (input.multiple) {
+      if (input.files.length === 0) {
+        return Promise.resolve([]);
+      }
+
+      return Promise.all((0, _utils.map)(_files.readFile, input.files));
     }
 
-    var _input$value$split = input.value.split("-W");
-
-    var _input$value$split2 = _slicedToArray(_input$value$split, 2);
-
-    var year = _input$value$split2[0];
-    var week = _input$value$split2[1];
-
-
-    if (week <= 0 || week > 53) {
-      // Invalid week string.
-      return input.value;
-    }
-
-    year = parseInt(year, 10);
-    week = parseInt(week, 10);
-
-    var naive = new Date(Date.UTC(year, 0, 1 + (week - 1) * 7));
-    var dayOfWeek = naive.getUTCDay();
-    var _date = naive;
-
-    if (dayOfWeek <= 4) {
-      _date.setUTCDate(naive.getUTCDate() - naive.getUTCDay() + 1);
-    } else {
-      _date.setUTCDate(naive.getUTCDate() + 8 - naive.getUTCDay());
-    }
-
-    if (_date.toString() === "Invalid Date") {
-      return input.value;
-    }
-
-    return _date;
+    return (0, _files.readFile)(input.files[0]);
   }
 
   return input.value;
@@ -282,8 +302,48 @@ function hasArrayLeaf(path) {
   return typeof path.slice(-1)[0] === "number";
 }
 
+function getWeek(value) {
+  // Get the date that starts this week.
+  if (!value.match(/^\s*\d+\s*-W\s*\d+\s*$/)) {
+    // Invalid week string.
+    return value;
+  }
+
+  var _value$split = value.split("-W");
+
+  var _value$split2 = _slicedToArray(_value$split, 2);
+
+  var year = _value$split2[0];
+  var week = _value$split2[1];
+
+
+  year = parseInt(year, 10);
+  week = parseInt(week, 10);
+
+  if (week <= 0 || week > 53) {
+    // Invalid week string.
+    return value;
+  }
+
+  var naive = new Date(Date.UTC(year, 0, 1 + (week - 1) * 7));
+  var dayOfWeek = naive.getUTCDay();
+  var date = naive;
+
+  if (dayOfWeek <= 4) {
+    date.setUTCDate(naive.getUTCDate() - naive.getUTCDay() + 1);
+  } else {
+    date.setUTCDate(naive.getUTCDate() + 8 - naive.getUTCDay());
+  }
+
+  if (date.toString() === "Invalid Date") {
+    return value;
+  }
+
+  return date;
+}
+
 exports.default = formsquare;
-},{"./utils":3}],3:[function(require,module,exports){
+},{"./files":2,"./utils":4}],4:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -295,6 +355,7 @@ exports.contains = contains;
 exports.extendUniq = extendUniq;
 exports.filter = filter;
 exports.flatMap = flatMap;
+exports.map = map;
 exports.reduce = reduce;
 exports.selectedValues = selectedValues;
 exports.startsWith = startsWith;
