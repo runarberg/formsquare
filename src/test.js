@@ -299,6 +299,17 @@ test("Checkbox arrays", t => {
 
   t.deepEqual(
     tform([
+      checkbox({ name: "values[]", value: "foo" }),
+      checkbox({ name: "values[]", value: "bar", checked }),
+      checkbox({ name: "values[]", value: "baz", checked }),
+      input({ name: "name", value: "quux" }),
+    ]),
+    { name: "quux", values: ["bar", "baz"] },
+    "Explicit as object leaf -- first empty",
+  );
+
+  t.deepEqual(
+    tform([
       input({ name: "name", value: "foo" }),
       checkbox({ name: "values[]", value: "foo" }),
       checkbox({ name: "values[]", value: "bar" }),
@@ -306,6 +317,26 @@ test("Checkbox arrays", t => {
     ]),
     { name: "foo", values: [] },
     "Explicit as object leaf -- empty",
+  );
+
+  t.deepEqual(
+    tform([
+      checkbox({ name: "values[]", value: "bar", checked }),
+      checkbox({ name: "values[]", value: "baz" }),
+      checkbox({ name: "values[]", value: "quux", checked }),
+    ]),
+    { values: ["bar", "quux"] },
+    "Explicit as a single object leaf",
+  );
+
+  t.deepEqual(
+    tform([
+      checkbox({ name: "values[]", value: "bar" }),
+      checkbox({ name: "values[]", value: "baz" }),
+      checkbox({ name: "values[]", value: "quux" }),
+    ]),
+    { values: [] },
+    "Explicit as a single object leaf -- empty",
   );
 
   t.deepEqual(
