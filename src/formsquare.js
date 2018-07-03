@@ -230,12 +230,19 @@ function setLeaf(leaf, attr, value, asObject) {
 
 function nonMember(obj, path) {
   // This is a non-member of an array.
-  if (obj === null) {
+  let node = obj;
+
+  if (node === null) {
     // The array hasn't been initialized yet.
-    return [];
+    if (path.length === 0 || typeof path[0] === "number") {
+      return [];
+    }
+
+    // The array will go under a new branch.
+    node = Object.create(null);
   }
 
-  let leaf = branch(path, obj);
+  let leaf = branch(path, node);
   let attr = path.slice(-1)[0];
 
   if (
@@ -246,7 +253,7 @@ function nonMember(obj, path) {
     leaf[attr] = [];
   }
 
-  return obj;
+  return node;
 }
 
 function fillSparse(node, attr) {
