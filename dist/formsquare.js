@@ -1,8 +1,8 @@
-(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.formsquare = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.formsquare = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 module.exports = require("./lib/formsquare");
 
 module.exports.NAME = "formsquare";
-module.exports.VERSION = "0.6.0";
+module.exports.VERSION = "0.7.0";
 
 },{"./lib/formsquare":3}],2:[function(require,module,exports){
 "use strict";
@@ -10,9 +10,6 @@ module.exports.VERSION = "0.6.0";
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
-
 exports.readFile = readFile;
 function readFile(file) {
   if (!file) {
@@ -30,21 +27,27 @@ function readFile(file) {
 
   return loaded.then(function (event) {
     // data:text/plain;base64,Zm9vCg
-
-    var _event$target$result$ = event.target.result.split(";");
-
-    var _event$target$result$2 = _slicedToArray(_event$target$result$, 2);
-
-    var type = _event$target$result$2[0];
-    var body = _event$target$result$2[1];
-
+    var _splitDataURL = splitDataURL(event.target.result),
+        type = _splitDataURL.type,
+        body = _splitDataURL.body;
 
     return {
-      "body": body.slice(7),
-      "name": file.name,
-      "type": type.slice(5)
+      body: body,
+      type: type,
+      name: file.name
     };
   });
+}
+
+function splitDataURL(str) {
+  var protocolIndex = str.indexOf(":");
+  var mimeIndex = str.indexOf(";", protocolIndex);
+  var startIndex = str.indexOf(",", mimeIndex);
+
+  return {
+    type: str.slice(protocolIndex + 1, mimeIndex),
+    body: str.slice(startIndex + 1)
+  };
 }
 },{}],3:[function(require,module,exports){
 "use strict";
@@ -64,7 +67,7 @@ var _files = require("./files");
 var digitRE = /^\s*\d+\s*$/;
 
 function formsquare(form) {
-  var includeEl = arguments.length <= 1 || arguments[1] === undefined ? (0, _utils.constant)(true) : arguments[1];
+  var includeEl = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : (0, _utils.constant)(true);
 
   if (typeof form === "function") {
     // Curry.
@@ -78,9 +81,9 @@ function formsquare(form) {
   return (0, _utils.reduce)(setValue, null, elements);
 
   function setValue(obj, input) {
-    var name = input.name;
-    var type = input.type;
-    var value = input.value;
+    var name = input.name,
+        type = input.type,
+        value = input.value;
 
     var path = getPath(name);
 
@@ -196,7 +199,7 @@ function initialize(obj, path) {
 }
 
 function getPath(name) {
-  var path = arguments.length <= 1 || arguments[1] === undefined ? [] : arguments[1];
+  var path = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
 
   if (name.length === 0) {
     return path;
@@ -273,19 +276,26 @@ function setLeaf(leaf, attr, value, asObject) {
 
 function nonMember(obj, path) {
   // This is a non-member of an array.
-  if (obj === null) {
+  var node = obj;
+
+  if (node === null) {
     // The array hasn't been initialized yet.
-    return [];
+    if (path.length === 0 || typeof path[0] === "number") {
+      return [];
+    }
+
+    // The array will go under a new branch.
+    node = Object.create(null);
   }
 
-  var leaf = branch(path, obj);
+  var leaf = branch(path, node);
   var attr = path.slice(-1)[0];
 
   if (path.length > 0 && typeof leaf[attr] === "undefined" && !hasArrayLeaf(path)) {
     leaf[attr] = [];
   }
 
-  return obj;
+  return node;
 }
 
 function fillSparse(node, attr) {
@@ -309,13 +319,10 @@ function getWeek(value) {
     return value;
   }
 
-  var _value$split = value.split("-W");
-
-  var _value$split2 = _slicedToArray(_value$split, 2);
-
-  var year = _value$split2[0];
-  var week = _value$split2[1];
-
+  var _value$split = value.split("-W"),
+      _value$split2 = _slicedToArray(_value$split, 2),
+      year = _value$split2[0],
+      week = _value$split2[1];
 
   year = parseInt(year, 10);
   week = parseInt(week, 10);
