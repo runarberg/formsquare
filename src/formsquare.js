@@ -11,15 +11,14 @@ import {
   startsWith,
 } from "./utils";
 
-import {readFile} from "./files";
-
+import { readFile } from "./files";
 
 const digitRE = /^\s*\d+\s*$/;
 
-export function formsquare(form, includeEl=constant(true)) {
+export function formsquare(form, includeEl = constant(true)) {
   if (typeof form === "function") {
     // Curry.
-    return (f) => formsquare(f, form);
+    return f => formsquare(f, form);
   }
 
   let elements = filter(includeEl, formElements(form));
@@ -27,7 +26,7 @@ export function formsquare(form, includeEl=constant(true)) {
   return reduce(setValue, null, elements);
 
   function setValue(obj, input) {
-    let {name, type, value} = input;
+    let { name, type, value } = input;
     let path = getPath(name);
 
     if (type === "radio" && !input.checked) {
@@ -36,10 +35,10 @@ export function formsquare(form, includeEl=constant(true)) {
     } else if (type === "checkbox" && input.getAttribute("value") === null) {
       value = input.checked;
     } else if (type === "checkbox" && !input.checked) {
-      if (hasArrayLeaf(path) || any(
-        (other) => other.name === name && other !== input,
-        elements
-      )) {
+      if (
+        hasArrayLeaf(path) ||
+        any(other => other.name === name && other !== input, elements)
+      ) {
         return nonMember(obj, path);
       }
       value = null;
@@ -66,12 +65,15 @@ export function formsquare(form, includeEl=constant(true)) {
 
     let leaf = branch(path, obj);
     let attr = path.slice(-1)[0];
-    let asObject = typeof attr !== "number" && any(
-      (other) => startsWith(name, other.name) &&
-        other !== input &&
-        other.name.slice(name.length).match(/\[[^\]]\]/),
-      elements
-    );
+    let asObject =
+      typeof attr !== "number" &&
+      any(
+        other =>
+          startsWith(name, other.name) &&
+          other !== input &&
+          other.name.slice(name.length).match(/\[[^\]]\]/),
+        elements,
+      );
 
     setLeaf(leaf, attr, value, asObject);
 
@@ -88,7 +90,9 @@ function getValue(input) {
     return +input.value;
   }
 
-  if (contains(input.getAttribute("type"), ["date", "datetime-local", "month"])) {
+  if (
+    contains(input.getAttribute("type"), ["date", "datetime-local", "month"])
+  ) {
     let date = new Date(input.value);
 
     if (date.toString() === "Invalid Date") {
@@ -118,10 +122,7 @@ function getValue(input) {
 }
 
 function formElements(form) {
-  if (
-    form instanceof NodeList ||
-      Array.isArray(form)
-  ) {
+  if (form instanceof NodeList || Array.isArray(form)) {
     return flatMap(formElements, form);
   }
 
@@ -129,8 +130,8 @@ function formElements(form) {
 
   if (
     !form.id ||
-      typeof window.HTMLFormControlsCollection === "function" &&
-      elements instanceof window.HTMLFormControlsCollection
+    (typeof window.HTMLFormControlsCollection === "function" &&
+      elements instanceof window.HTMLFormControlsCollection)
   ) {
     return elements;
   }
@@ -138,8 +139,8 @@ function formElements(form) {
   // Polyfill for browsers that don't support html5 form attribute.
   let outside = document.querySelectorAll(`[form="${form.id}"]`);
   let inside = filter(
-    (el) => contains(el.getAttribute("form"), ["", null, form.id]),
-    elements
+    el => contains(el.getAttribute("form"), ["", null, form.id]),
+    elements,
   );
 
   return extendUniq(inside, outside);
@@ -147,15 +148,13 @@ function formElements(form) {
 
 function initialize(obj, path) {
   if (obj === null) {
-    return typeof path[0] === "number" ?
-      [] :
-      Object.create(null);
+    return typeof path[0] === "number" ? [] : Object.create(null);
   }
 
   return obj;
 }
 
-function getPath(name, path=[]) {
+function getPath(name, path = []) {
   if (name.length === 0) {
     return path;
   }
@@ -184,9 +183,7 @@ function getPath(name, path=[]) {
   }
 
   let next = name.slice(open + 1, close);
-  let attr = next === "" ? -1 :
-      next.match(digitRE) ? +next :
-      next;
+  let attr = next === "" ? -1 : next.match(digitRE) ? +next : next;
 
   path.push(attr);
   return getPath(name.slice(close + 1), path);
@@ -203,9 +200,7 @@ function branch(path, node) {
   let next = node[attr];
 
   if (typeof next === "undefined") {
-    let nextBranch = typeof rest[0] === "number" ?
-          [] :
-          Object.create(null);
+    let nextBranch = typeof rest[0] === "number" ? [] : Object.create(null);
 
     if (Array.isArray(node) && attr === -1) {
       node.push(nextBranch);
@@ -226,10 +221,10 @@ function setLeaf(leaf, attr, value, asObject) {
     if (!Array.isArray(leaf[attr])) {
       leaf[attr] = [leaf[attr]];
     }
-    leaf[attr].push(asObject ? {"": value} : value);
+    leaf[attr].push(asObject ? { "": value } : value);
   } else {
     fillSparse(leaf, attr);
-    leaf[attr] = asObject ? {"": value} : value;
+    leaf[attr] = asObject ? { "": value } : value;
   }
 }
 
@@ -243,7 +238,11 @@ function nonMember(obj, path) {
   let leaf = branch(path, obj);
   let attr = path.slice(-1)[0];
 
-  if (path.length > 0 && typeof leaf[attr] === "undefined" && !hasArrayLeaf(path)) {
+  if (
+    path.length > 0 &&
+    typeof leaf[attr] === "undefined" &&
+    !hasArrayLeaf(path)
+  ) {
     leaf[attr] = [];
   }
 

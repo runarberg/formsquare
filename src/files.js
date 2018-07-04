@@ -12,14 +12,14 @@ export function readFile(file) {
 
   reader.readAsDataURL(file);
 
-  return loaded.then((event) => {
+  return loaded.then(event => {
     // data:text/plain;base64,Zm9vCg
-    let {type, body} = splitDataURL(event.target.result);
+    let { type, body } = splitDataURL(event.target.result);
 
     return {
       body,
       type,
-      "name": file.name,
+      name: file.name,
     };
   });
 }
@@ -30,7 +30,7 @@ function splitDataURL(str) {
   const startIndex = str.indexOf(",", mimeIndex);
 
   return {
-    "type": str.slice(protocolIndex + 1, mimeIndex),
-    "body": str.slice(startIndex + 1),
+    type: str.slice(protocolIndex + 1, mimeIndex),
+    body: str.slice(startIndex + 1),
   };
 }

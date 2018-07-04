@@ -21,9 +21,10 @@
     "compress": "gzip -k -9 dist/*.js && bzip2 -k -9 dist/*.js",
     "dist": "mkdir -p dist && npm run browserify && npm run minify && npm run compress",
     "predist": "rm -f dist/* && npm run build",
-    "lint": "eslint src/*.js tests/*.js",
+    "lint": "eslint --ignore-path .ignore .",
     "minify": "uglifyjs dist/formsquare.js -mco dist/formsquare.min.js",
     "prepare": "npm run build",
+    "pretty": "prettier --write --ignore-path .ignore **/*.{js,json}",
     "test": "nyc ava",
     "test:report": "nyc report --reporter html"
   },
@@ -40,6 +41,11 @@
     "require": "babel-register",
     "babel": "inherit"
   },
+  "babel": {
+    "presets": [
+      "env"
+    ]
+  },
   "nyc": {
     "exclude": [
       "test/**/*.js",
@@ -53,18 +59,26 @@
       "text-summary"
     ]
   },
+  "prettier": {
+    "trailingComma": "all"
+  },
   "devDependencies": {
     "ava": "^0.25.0",
-    "babel-cli": "^6.6.4",
-    "babel-core": "^6.6.4",
-    "babel-preset-es2015": "^6.6.0",
-    "babelify": "^7.2.0",
+    "babel-cli": "^6.26.0",
+    "babel-eslint": "^8.2.5",
+    "babel-preset-env": "^1.7.0",
+    "babelify": "^8.0.0",
     "browser-env": "^3.2.5",
-    "browserify": "^13.0.0",
+    "browserify": "^16.2.2",
     "coveralls": "^3.0.2",
-    "eslint": "^2.3.0",
+    "eslint": "^5.0.1",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-plugin-ava": "^4.5.1",
+    "eslint-plugin-import": "^2.13.0",
+    "eslint-plugin-prettier": "^2.6.1",
     "nyc": "^12.0.2",
-    "uglify-js": "^2.6.2"
+    "prettier": "1.13.7",
+    "uglify-js": "^3.4.3"
   },
   "dependencies": {}
 }
