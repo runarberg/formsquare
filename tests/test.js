@@ -1,68 +1,68 @@
-import * as pkg from "../index";
-import formsquare from "../index";
-import test from "tape";
+import * as pkg from "..";
+import browserEnv from "browser-env";
+import test from "ava";
+
+browserEnv(["window", "document", "NodeList"]);
 
 const checked = true;
 const disabled = true;
 const selected = true;
 
-test("Named exports", ({equal, ok, plan}) => {
-  plan(4);
+const formsquare = pkg.default;
 
-  equal(pkg.NAME, "formsquare", "Name");
-  ok(pkg.VERSION.match(/\d+\.\d+\.\d+/), "Version");
-  ok(typeof pkg.default === "function", "formsquare()");
-  equal(pkg.formsquare, pkg.default, "Default");
+test("Named exports", (t) => {
+  t.is(pkg.NAME, "formsquare", "Name");
+  t.truthy(pkg.VERSION.match(/\d+\.\d+\.\d+/), "Version");
+  t.true(typeof pkg.default === "function", "formsquare()");
+  t.is(pkg.formsquare, pkg.default, "Default");
 });
 
-test("Types", ({deepEqual, equal, plan}) => {
-  plan(10);
+test("Types", (t) => {
+  t.deepEqual(tform(), null, "null (empty form)");
 
-  deepEqual(tform(), null, "null (empty form)");
-
-  equal(
+  t.is(
     tform([input({"type": "number", "value": "1"})]),
     1,
     "Number"
   );
 
-  equal(
+  t.is(
     tform([input({"type": "checkbox", checked})]),
     true,
     "Boolean"
   );
 
-  equal(
+  t.is(
     tform([input({"type": "text", "value": "1"})]),
     "1",
     "String"
   );
 
-  deepEqual(
+  t.deepEqual(
     tform([input({"type": "month", "value": "1989-03"})]),
     new Date("1989-03"),
     "Month"
   );
 
-  deepEqual(
+  t.deepEqual(
     tform([input({"type": "week", "value": "2009-W01"})]),
     new Date("2008-12-29"),
     "Week"
   );
 
-  equal(
+  t.is(
     tform([input({"type": "week", "value": "1989-10"})]),
     "1989-10",
     "Week -- invalid"
   );
 
-  deepEqual(
+  t.deepEqual(
     tform([input({"type": "date", "value": "1989-03-10"})]),
     new Date("1989-03-10"),
     "Date"
   );
 
-  deepEqual(
+  t.deepEqual(
     tform([input({"type": "datetime-local", "value": "1989-03-10T21:00:44"})]),
     new Date("1989-03-10T21:00:44"),
     "Datetime-local"
@@ -70,30 +70,26 @@ test("Types", ({deepEqual, equal, plan}) => {
 
   // We are not able to test real file input in real browsers:
   tform([input({"type": "file"})]).then((file) => {
-    deepEqual(file, null, "File");
+    t.deepEqual(file, null, "File");
   });
 });
 
-test("Collection types", ({deepEqual, plan}) => {
-  plan(2);
-
-  deepEqual(
+test("Collection types", (t) => {
+  t.deepEqual(
     tform([input({"name": "foo", "value": "bar"})]),
     {"foo": "bar"},
     "Object"
   );
 
-  deepEqual(
+  t.deepEqual(
     tform([input({"name": "[]", "value": "bar"})]),
     ["bar"],
     "Array"
   );
 });
 
-test("Arrays", ({deepEqual, plan}) => {
-  plan(4);
-
-  deepEqual(
+test("Arrays", (t) => {
+  t.deepEqual(
     tform([
       input({"name": "[]", "value": "foo"}),
       input({"name": "[]", "value": "bar"}),
@@ -102,7 +98,7 @@ test("Arrays", ({deepEqual, plan}) => {
     "Square brackets"
   );
 
-  deepEqual(
+  t.deepEqual(
     tform([
       input({"name": "", "value": "foo"}),
       input({"name": "", "value": "bar"}),
@@ -112,7 +108,7 @@ test("Arrays", ({deepEqual, plan}) => {
   );
 
 
-  deepEqual(
+  t.deepEqual(
     tform([
       input({"name": "[1]", "value": "foo"}),
       input({"name": "[0]", "value": "bar"}),
@@ -121,7 +117,7 @@ test("Arrays", ({deepEqual, plan}) => {
     "Enumerated"
   );
 
-  deepEqual(
+  t.deepEqual(
     tform([
       input({"name": "[2]", "value": "foo"}),
       input({"name": "[0]", "value": "bar"}),
@@ -131,22 +127,20 @@ test("Arrays", ({deepEqual, plan}) => {
   );
 });
 
-test("Objects", ({deepEqual, plan}) => {
-  plan(3);
-
-  deepEqual(
+test("Objects", (t) => {
+  t.deepEqual(
     tform([input({"type": "number", "name": "foo", "value": 42})]),
     {"foo": 42},
     "Basic"
   );
 
-  deepEqual(
+  t.deepEqual(
     tform([input({"type": "number", "name": "foo[bar]", "value": 42})]),
     {"foo": {"bar": 42}},
     "Nested"
   );
 
-  deepEqual(
+  t.deepEqual(
     tform([
       input({"name": "[0][name]", "value": "foo"}),
       input({"type": "number", "name": "[0][value]", "value": "5"}),
@@ -158,12 +152,10 @@ test("Objects", ({deepEqual, plan}) => {
   );
 });
 
-test("Form elements", ({deepEqual, equal, plan}) => {
-  plan(9);
-
+test("Form elements", (t) => {
   let loremIpsum = "Lorem ipsum dolar sit amet";
 
-  deepEqual(
+  t.deepEqual(
     tform([
       input({"type": "radio", "name": "radio", "value": "1"}),
       input({"type": "radio", "name": "radio", "value": "2", checked}),
@@ -173,7 +165,7 @@ test("Form elements", ({deepEqual, equal, plan}) => {
     "Input type radio"
   );
 
-  equal(
+  t.is(
     tform([select([
       option("foo"),
       option({selected}, "bar"),
@@ -183,7 +175,7 @@ test("Form elements", ({deepEqual, equal, plan}) => {
     "Select by content"
   );
 
-  deepEqual(
+  t.deepEqual(
     tform([select({"name": "select"}, [
       option({"value": "1"}, [text("foo")]),
       option({"value": "2", selected}, [text("bar")]),
@@ -193,7 +185,7 @@ test("Form elements", ({deepEqual, equal, plan}) => {
     "Select by value"
   );
 
-  deepEqual(
+  t.deepEqual(
     tform([select({"multiple": true}, [
       option({selected}, "foo"),
       option({selected}, "bar"),
@@ -203,7 +195,7 @@ test("Form elements", ({deepEqual, equal, plan}) => {
     "Select multiple"
   );
 
-  deepEqual(
+  t.deepEqual(
     tform([select({"multiple": true}, [
       option("foo"),
       option("bar"),
@@ -215,20 +207,20 @@ test("Form elements", ({deepEqual, equal, plan}) => {
 
   // We are not able to test real file inputs in real browsers.
   tform([input({"type": "file", "multiple": true})]).then((files) => {
-    deepEqual(
+    t.deepEqual(
       files,
       [],
       "File input multiple -- empty"
     );
   });
 
-  equal(
+  t.is(
     tform([textarea(loremIpsum)]),
     loremIpsum,
     "Textarea"
   );
 
-  deepEqual(
+  t.deepEqual(
     tform([textarea({"name": "text"}, loremIpsum)]),
     {"text": loremIpsum},
     "Textarea with name"
@@ -245,7 +237,7 @@ test("Form elements", ({deepEqual, equal, plan}) => {
 
   document.documentElement.appendChild(div);
 
-  deepEqual(
+  t.deepEqual(
     formsquare(document.getElementById("form-0")),
     {"inside": true, "outside": loremIpsum, "both": ["foo", "bar"]},
     "Outside and inside forms"
@@ -254,53 +246,49 @@ test("Form elements", ({deepEqual, equal, plan}) => {
   document.documentElement.removeChild(div);
 });
 
-test("Checkboxes", ({deepEqual, equal, plan}) => {
-  plan(8);
+test("Checkboxes", (t) => {
+  t.false(tform([checkbox()]), "Unchecked");
+  t.true(tform([checkbox({checked})]), "Checked");
 
-  equal(tform([checkbox()]), false, "Unchecked");
-  equal(tform([checkbox({checked})]), true, "Checked");
-
-  deepEqual(
+  t.deepEqual(
     tform([checkbox({"name": "foo"})]),
     {"foo": false},
     "Name -- unchecked"
   );
 
-  deepEqual(
+  t.deepEqual(
     tform([checkbox({"name": "foo", checked})]),
     {"foo": true},
     "Name -- checked"
   );
 
-  equal(
+  t.is(
     tform([checkbox({"value": "bar"})]),
     null,
     "Value -- unchecked"
   );
 
-  equal(
+  t.is(
     tform([checkbox({"value": "bar", checked})]),
     "bar",
     "Value -- checked"
   );
 
-  deepEqual(
+  t.deepEqual(
     tform([checkbox({"name": "foo", "value": "bar"})]),
     {"foo": null},
     "Name + value -- unchecked"
   );
 
-  deepEqual(
+  t.deepEqual(
     tform([checkbox({"name": "foo", "value": "bar", checked})]),
     {"foo": "bar"},
     "Name + value -- checked"
   );
 });
 
-test("Checkbox arrays", ({deepEqual, plan}) => {
-  plan(10);
-
-  deepEqual(
+test("Checkbox arrays", (t) => {
+  t.deepEqual(
     tform([
       checkbox({"name": "[]", "value": "foo", checked}),
       checkbox({"name": "[]", "value": "bar"}),
@@ -310,7 +298,7 @@ test("Checkbox arrays", ({deepEqual, plan}) => {
     "Explicit"
   );
 
-  deepEqual(
+  t.deepEqual(
     tform([
       checkbox({"name": "[]", "value": "foo"}),
       checkbox({"name": "[]", "value": "bar"}),
@@ -320,7 +308,7 @@ test("Checkbox arrays", ({deepEqual, plan}) => {
     "Explicit -- empty"
   );
 
-  deepEqual(
+  t.deepEqual(
     tform([
       checkbox({"value": "foo", checked}),
       checkbox({"value": "bar"}),
@@ -330,7 +318,7 @@ test("Checkbox arrays", ({deepEqual, plan}) => {
     "Implicit"
   );
 
-  deepEqual(
+  t.deepEqual(
     tform([
       checkbox({"value": "foo"}),
       checkbox({"value": "bar"}),
@@ -340,7 +328,7 @@ test("Checkbox arrays", ({deepEqual, plan}) => {
     "Implicit -- empty"
   );
 
-  deepEqual(
+  t.deepEqual(
     tform([
       input({"name": "name", "value": "foo"}),
       checkbox({"name": "values[]", "value": "bar", checked}),
@@ -351,7 +339,7 @@ test("Checkbox arrays", ({deepEqual, plan}) => {
     "Explicit as object leaf"
   );
 
-  deepEqual(
+  t.deepEqual(
     tform([
       input({"name": "name", "value": "foo"}),
       checkbox({"name": "values[]", "value": "foo"}),
@@ -362,7 +350,7 @@ test("Checkbox arrays", ({deepEqual, plan}) => {
     "Explicit as object leaf -- empty"
   );
 
-  deepEqual(
+  t.deepEqual(
     tform([
       input({"name": "name", "value": "foo"}),
       checkbox({"name": "values", "value": "bar", checked}),
@@ -373,7 +361,7 @@ test("Checkbox arrays", ({deepEqual, plan}) => {
     "Implicit as object leaf"
   );
 
-  deepEqual(
+  t.deepEqual(
     tform([
       input({"name": "name", "value": "foo"}),
       checkbox({"name": "values", "value": "foo"}),
@@ -384,13 +372,13 @@ test("Checkbox arrays", ({deepEqual, plan}) => {
     "Implicit as object leaf -- empty"
   );
 
-  deepEqual(
+  t.deepEqual(
     tform([checkbox(), checkbox(), checkbox()]),
     [false, false, false],
     "Array of booleans"
   );
 
-  deepEqual(
+  t.deepEqual(
     tform([
       input({"name": "name", "value": "booleans"}),
       checkbox({"name": "values"}),
@@ -402,35 +390,33 @@ test("Checkbox arrays", ({deepEqual, plan}) => {
   );
 });
 
-test("Filter", ({equal, ok, plan}) => {
-  plan(6);
-
+test("Filter", (t) => {
   let someDisabled = form([
     input({"value": "disabled", disabled}),
     input({"value": "enabled"}),
   ]);
 
-  ok(typeof formsquare((x) => x) === "function", "Curry");
+  t.true(typeof formsquare((x) => x) === "function", "Curry");
 
-  equal(
+  t.is(
     formsquare(someDisabled, (el) => !el.disabled),
     "enabled",
     "No disabled"
   );
 
-  equal(
+  t.is(
     formsquare((el) => !el.disabled)(someDisabled),
     "enabled",
     "No disabled -- curry"
   );
 
-  equal(
+  t.is(
     formsquare(someDisabled, (el) => el.disabled),
     "disabled",
     "Only disabled"
   );
 
-  equal(
+  t.is(
     formsquare(form([
       input({"class": "shown", "value": "shown"}),
       input({"class": "hidden", "value": "hidden"}),
@@ -439,7 +425,7 @@ test("Filter", ({equal, ok, plan}) => {
     "No hidden"
   );
 
-  equal(
+  t.is(
     formsquare(form([
       checkbox({"value": "enabled", checked}),
       checkbox({"value": "disabled", checked, disabled}),
@@ -450,10 +436,8 @@ test("Filter", ({equal, ok, plan}) => {
   );
 });
 
-test("Collections of forms", ({deepEqual, plan}) => {
-  plan(3);
-
-  deepEqual(
+test("Collections of forms", (t) => {
+  t.deepEqual(
     formsquare(crel("div", [
       form([
         input({"name": "foo", "value": "bar"}),
@@ -466,7 +450,7 @@ test("Collections of forms", ({deepEqual, plan}) => {
     "Simple object"
   );
 
-  deepEqual(
+  t.deepEqual(
     formsquare(crel("div", [
       form([
         input({"type": "number", "value": "5"}),
@@ -479,7 +463,7 @@ test("Collections of forms", ({deepEqual, plan}) => {
     "Merge arrays cross forms"
   );
 
-  deepEqual(
+  t.deepEqual(
     formsquare([
       form([
         input({"name": "foo", "value": "bar"}),
@@ -493,10 +477,8 @@ test("Collections of forms", ({deepEqual, plan}) => {
   );
 });
 
-test("html-json-forms examples", ({deepEqual, plan}) => {
-  plan(9);
-
-  deepEqual(
+test("html-json-forms examples", (t) => {
+  t.deepEqual(
     tform([
       input({"name": "name", "value": "Bender"}),
       select({"name": "hind"}, [
@@ -509,7 +491,7 @@ test("html-json-forms examples", ({deepEqual, plan}) => {
     "Example 1: Basic Keys"
   );
 
-  deepEqual(
+  t.deepEqual(
     tform([
       input({"type": "number", "name": "bottle-on-wall", "value": "1"}),
       input({"type": "number", "name": "bottle-on-wall", "value": "2"}),
@@ -519,7 +501,7 @@ test("html-json-forms examples", ({deepEqual, plan}) => {
     "Example 2: Multiple Values"
   );
 
-  deepEqual(
+  t.deepEqual(
     tform([
       input({"name": "pet[species]", "value": "Dahut"}),
       input({"name": "pet[name]", "value": "Hypatia"}),
@@ -536,7 +518,7 @@ test("html-json-forms examples", ({deepEqual, plan}) => {
     "Example 3: Deeper Structure"
   );
 
-  deepEqual(
+  t.deepEqual(
     tform([
       input({"name": "hearbeat[0]", "value": "thunk"}),
       input({"name": "hearbeat[2]", "value": "thunk"}),
@@ -545,7 +527,7 @@ test("html-json-forms examples", ({deepEqual, plan}) => {
     "Example 4: Sparse Arrays"
   );
 
-  deepEqual(
+  t.deepEqual(
     tform([
       input({"name": "pet[0][species]", "value": "Dahut"}),
       input({"name": "pet[0][name]", "value": "Hypatia"}),
@@ -559,7 +541,7 @@ test("html-json-forms examples", ({deepEqual, plan}) => {
     "Example 5: Even Deeper"
   );
 
-  deepEqual(
+  t.deepEqual(
     tform([
       input({"name": "wow[such][deep][3][much][power][!]", "value": "Amaze"}),
     ]),
@@ -572,7 +554,7 @@ test("html-json-forms examples", ({deepEqual, plan}) => {
     "Example 6: Such Deep"
   );
 
-  deepEqual(
+  t.deepEqual(
     tform([
       input({"name": "mix", "value": "scalar"}),
       input({"name": "mix[0]", "value": "array 1"}),
@@ -590,13 +572,13 @@ test("html-json-forms examples", ({deepEqual, plan}) => {
     "Example 7: Merge Behaviour"
   );
 
-  deepEqual(
+  t.deepEqual(
     tform([input({"name": "highlander[]", "value": "one"})]),
     {"highlander": ["one"]},
     "Example 8: Append"
   );
 
-  deepEqual(
+  t.deepEqual(
     tform([
       input({"name": "error[good]", "value": "BOOM!"}),
       input({"name": "error[bad", "value": "BOOM! BOOM!"}),

@@ -24,22 +24,32 @@
     "lint": "eslint src/*.js tests/*.js",
     "minify": "uglifyjs dist/formsquare.js -mco dist/formsquare.min.js",
     "prepublish": "npm run build",
-    "test": "browserify -t babelify tests/*.js | testling | tap-spec",
+    "test": "ava",
     "test:build": "npm test",
     "pretest:build": "npm run build"
   },
   "author": "Rúnar Berg Baugsson Sigríðarson <runarberg@zoho.com>",
   "license": "MIT",
+  "ava": {
+    "files": [
+      "test/**/*.js",
+      "**/test.js",
+      "**/*.test.js",
+      "!lib/**/*",
+      "!dist/**/*"
+    ],
+    "require": "babel-register",
+    "babel": "inherit"
+  },
   "devDependencies": {
+    "ava": "^0.25.0",
     "babel-cli": "^6.6.4",
     "babel-core": "^6.6.4",
     "babel-preset-es2015": "^6.6.0",
     "babelify": "^7.2.0",
+    "browser-env": "^3.2.5",
     "browserify": "^13.0.0",
     "eslint": "^2.3.0",
-    "tap-spec": "^4.1.1",
-    "tape": "^4.5.0",
-    "testling": "^1.7.1",
     "uglify-js": "^2.6.2"
   },
   "dependencies": {}

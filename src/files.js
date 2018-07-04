@@ -14,12 +14,23 @@ export function readFile(file) {
 
   return loaded.then((event) => {
     // data:text/plain;base64,Zm9vCg
-    let [type, body] = event.target.result.split(";");
+    let {type, body} = splitDataURL(event.target.result);
 
     return {
-      "body": body.slice(7),
+      body,
+      type,
       "name": file.name,
-      "type": type.slice(5),
     };
   });
+}
+
+function splitDataURL(str) {
+  const protocolIndex = str.indexOf(":");
+  const mimeIndex = str.indexOf(";", protocolIndex);
+  const startIndex = str.indexOf(",", mimeIndex);
+
+  return {
+    "type": str.slice(protocolIndex + 1, mimeIndex),
+    "body": str.slice(startIndex + 1),
+  };
 }
