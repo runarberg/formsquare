@@ -52,16 +52,20 @@ export function filter(p, arr) {
 }
 
 export function flatMap(fn, arr) {
-  return reduce((acc, el) => {
-    let collection = fn(el);
-    let len = collection.length;
+  return reduce(
+    (acc, el) => {
+      let collection = fn(el);
+      let len = collection.length;
 
-    for (let i = 0; i < len; i += 1) {
-      acc.push(collection[i]);
-    }
+      for (let i = 0; i < len; i += 1) {
+        acc.push(collection[i]);
+      }
 
-    return acc;
-  }, [], arr);
+      return acc;
+    },
+    [],
+    arr,
+  );
 }
 
 export function map(fn, arr) {
@@ -86,10 +90,10 @@ export function reduce(fn, acc, arr) {
 }
 
 export function selectedValues(select) {
-  let options = select.selectedOptions ||
-        filter((option) => option.selected, select.options);
+  let options =
+    select.selectedOptions || filter(option => option.selected, select.options);
 
-  return map((option) => option.value, options);
+  return map(option => option.value, options);
 }
 
 export function startsWith(match, string) {
