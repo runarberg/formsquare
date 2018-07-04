@@ -23,10 +23,9 @@
     "predist": "rm -f dist/* && npm run build",
     "lint": "eslint src/*.js tests/*.js",
     "minify": "uglifyjs dist/formsquare.js -mco dist/formsquare.min.js",
-    "prepublish": "npm run build",
-    "test": "ava",
-    "test:build": "npm test",
-    "pretest:build": "npm run build"
+    "prepare": "npm run build",
+    "test": "nyc ava",
+    "test:report": "nyc report --reporter html"
   },
   "author": "Rúnar Berg Baugsson Sigríðarson <runarberg@zoho.com>",
   "license": "MIT",
@@ -41,6 +40,19 @@
     "require": "babel-register",
     "babel": "inherit"
   },
+  "nyc": {
+    "exclude": [
+      "test/**/*.js",
+      "**/test.js",
+      "**/*.test.js",
+      "lib",
+      "dist"
+    ],
+    "reporter": [
+      "text",
+      "text-summary"
+    ]
+  },
   "devDependencies": {
     "ava": "^0.25.0",
     "babel-cli": "^6.6.4",
@@ -49,7 +61,9 @@
     "babelify": "^7.2.0",
     "browser-env": "^3.2.5",
     "browserify": "^13.0.0",
+    "coveralls": "^3.0.2",
     "eslint": "^2.3.0",
+    "nyc": "^12.0.2",
     "uglify-js": "^2.6.2"
   },
   "dependencies": {}
