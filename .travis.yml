@@ -3,3 +3,5 @@ node_js:
   - node
   - lts/*
 sudo: false
+after_script:
+  npx nyc report --reporter=text-lcov | npx coveralls
