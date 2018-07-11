@@ -1,6 +1,5 @@
 .nyc_output/
 coverage/
 dist/
-index.js
-lib/
+formsquare-*.tgz
 node_modules/

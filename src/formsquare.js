@@ -9,13 +9,13 @@ import {
   reduce,
   selectedValues,
   startsWith,
-} from "./utils";
+} from "./utils.js";
 
-import { readFile } from "./files";
+import { readFile } from "./files.js";
 
 const digitRE = /^\s*\d+\s*$/;
 
-export function formsquare(form, includeEl = constant(true)) {
+export default function formsquare(form, includeEl = constant(true)) {
   if (typeof form === "function") {
     // Curry.
     return f => formsquare(f, form);
@@ -303,5 +303,3 @@ function getWeek(value) {
 
   return date;
 }
-
-export default formsquare;

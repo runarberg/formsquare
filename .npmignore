@@ -1,4 +1,5 @@
 .nyc_output/
 coverage/
-dist/
-src/
+formsquare-*.tgz
+src/**/*.test.js
+src/**/test.js

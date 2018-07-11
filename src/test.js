@@ -1,6 +1,7 @@
 import browserEnv from "browser-env";
-import formsquare from "./formsquare";
 import test from "ava";
+
+import formsquare from "./formsquare.js";
 
 browserEnv(["window", "document", "NodeList"]);
 

@@ -9,8 +9,6 @@
         white-space: pre;
       }
     </style>
-    <script src="../dist/formsquare.js"></script>
-    <script>var formsquare = formsquare.default</script>
   </head>
 
   <body>
@@ -28,18 +26,38 @@
 
         <output></output>
 
-        <script>
-          (function() {
-          var div = document.getElementById("readme-example-basic");
+        <script type="module">
+          import formsquare from "/dist/module/formsquare.js";
 
-          var form = div.querySelector("form");
-          var obj = formsquare(form, function(el) {
-            return !el.disabled;
-          });
+          const div = document.getElementById("readme-example-basic");
+          const form = div.querySelector("form");
+          const obj = formsquare(form, el => !el.disabled);
+          const output = div.querySelector("output");
 
-          var output = div.querySelector("output");
           output.textContent = JSON.stringify(obj);
-          }())
+        </script>
+      </div>
+
+      <div class="example" id="readme-example-basic-nomodule">
+        <h3>Basic (no module)</h3>
+        <form>
+          <input name="foo" value="bar">
+          <input name="baz" value="quux" disabled>
+        </form>
+
+        <output></output>
+
+        <!-- See if the iife script works -->
+        <script src="/dist/iife/formsquare.js"></script>
+        <script>
+          {
+            const div = document.getElementById("readme-example-basic-nomodule");
+            const form = div.querySelector("form");
+            const obj = formsquare(form, el => !el.disabled);
+            const output = div.querySelector("output");
+
+            output.textContent = JSON.stringify(obj);
+          }
         </script>
       </div>
 
@@ -58,20 +76,19 @@
 
         <output></output>
 
-        <script>
-          (function() {
-          var div = document.getElementById("readme-example-curry");
-          var serialize = formsquare(function(el) {
-            return !el.disabled;
-          });
+        <script type="module">
+          import formsquare from "/dist/module/formsquare.js";
 
-          var forms = div.querySelectorAll("form");
+          const div = document.getElementById("readme-example-curry");
+          const parseForm = formsquare(el => !el.disabled);
 
-          var output = div.querySelector("output");
-          output.textContent = [].map.call(forms, serialize)
+          const forms = div.querySelectorAll("form");
+          const output = div.querySelector("output");
+
+          output.textContent = [...forms]
+            .map(parseForm)
             .map(JSON.stringify)
             .join("\n");
-          }())
         </script>
       </div>
 
@@ -82,16 +99,15 @@
 
         <output></output>
 
-        <script>
-          (function() {
-          var div = document.getElementById("readme-example-empty");
+        <script type="module">
+          import formsquare from "/dist/module/formsquare.js";
 
-          var form = div.querySelector("form");
-          var obj = formsquare(form);
+          const div = document.getElementById("readme-example-empty");
+          const form = div.querySelector("form");
+          const obj = formsquare(form);
+          const output = div.querySelector("output");
 
-          var output = div.querySelector("output");
           output.textContent = JSON.stringify(obj);
-          }())
         </script>
       </div>
 
@@ -104,19 +120,20 @@
 
         <output></output>
 
-        <script>
-          (function() {
-          var div = document.getElementById("readme-example-singleton");
+        <script type="module">
+          import formsquare from "/dist/module/formsquare.js";
 
-          var form = div.querySelector("form");
-          var output = div.querySelector("output");
-          var string = JSON.stringify(formsquare(form));
+          const div = document.getElementById("readme-example-singleton");
+          const form = div.querySelector("form");
+          const output = div.querySelector("output");
+          const strings = [];
+
+          strings.push(JSON.stringify(formsquare(form)));
 
           form[0].type = "text";
-          string += "\n" + JSON.stringify(formsquare(form));
+          strings.push(JSON.stringify(formsquare(form)));
 
-          output.textContent = string;
-          }())
+          output.textContent = strings.join("\n");
         </script>
       </div>
 
@@ -130,20 +147,21 @@
 
         <output></output>
 
-        <script>
-          (function() {
-          var div = document.getElementById("readme-example-checkboxes");
+        <script type="module">
+          import formsquare from "/dist/module/formsquare.js";
 
-          var form = div.querySelector("form");
-          var output = div.querySelector("output");
-          var string = JSON.stringify(formsquare(form));
+          const div = document.getElementById("readme-example-checkboxes");
+          const form = div.querySelector("form");
+          const output = div.querySelector("output");
+          const strings = [];
+
+          strings.push(JSON.stringify(formsquare(form)));
 
           form[0].value = "false";
           form[1].value = "on"
-          string += "\n" + JSON.stringify(formsquare(form));
+          strings.push(JSON.stringify(formsquare(form)));
 
-          output.textContent = string;
-          }())
+          output.textContent = strings.join("\n");
         </script>
       </div>
 
@@ -156,16 +174,15 @@
 
         <output></output>
 
-        <script>
-          (function() {
-          var div = document.getElementById("readme-example-week");
+        <script type="module">
+          import formsquare from "/dist/module/formsquare.js";
 
-          var form = div.querySelector("form");
-          var output = div.querySelector("output");
-          var string = JSON.stringify(formsquare(form));
+          const div = document.getElementById("readme-example-week");
+          const form = div.querySelector("form");
+          const output = div.querySelector("output");
+          const string = JSON.stringify(formsquare(form));
 
           output.textContent = string;
-          }())
         </script>
       </div>
 
@@ -178,16 +195,16 @@
 
         <output></output>
 
-        <script>
-          (function() {
-          var div = document.getElementById("readme-example-files");
+        <script type="module">
+          import formsquare from "/dist/module/formsquare.js";
 
-          var form = div.querySelector("form");
-          var output = div.querySelector("output");
+          const div = document.getElementById("readme-example-files");
+          const form = div.querySelector("form");
+          const output = div.querySelector("output");
+
           formsquare(form).then((data) => {
             output.textContent = JSON.stringify(data);
           });
-          }())
         </script>
       </div>
 
@@ -205,19 +222,18 @@
 
         <output></output>
 
-        <script>
-          (function() {
-          var div = document.getElementById("readme-example-form-collection");
+        <script type="module">
+          import formsquare from "/dist/module/formsquare.js";
 
-          var forms = div.querySelectorAll("form");
-          var output = div.querySelector("output");
-          var string = "";
-          string += JSON.stringify(formsquare(forms));
-          string += "\n";
-          string += JSON.stringify([...forms].map(formsquare(() => true)));
+          const div = document.getElementById("readme-example-form-collection");
+          const forms = div.querySelectorAll("form");
+          const output = div.querySelector("output");
+          const strings = [];
 
-          output.textContent = string;
-          }())
+          strings.push(JSON.stringify(formsquare(forms)));
+          strings.push(JSON.stringify([...forms].map(formsquare(() => true))));
+
+          output.textContent = strings.join("\n");
         </script>
       </div>
     </section>

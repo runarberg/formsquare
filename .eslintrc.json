@@ -13,5 +13,8 @@
     "plugin:import/errors",
     "plugin:ava/recommended",
     "plugin:prettier/recommended"
-  ]
+  ],
+  "rules": {
+    "import/extensions": ["error", "always", { "ignorePackages": true }]
+  }
 }
