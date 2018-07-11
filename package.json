@@ -8,24 +8,23 @@
     "html",
     "json"
   ],
-  "main": "index.js",
+  "main": "dist/cjs/formsquare.js",
+  "unpkg": "dist/iife/formsquare.js",
+  "module": "dist/module/formsquare.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/runarberg/formsquare.git"
   },
   "scripts": {
-    "browserify": "browserify -s formsquare index.js > dist/formsquare.js",
-    "build": "mkdir -p lib && echo \"module.exports = require(\\\"./lib/formsquare\\\");\n\nmodule.exports.NAME = \\\"${npm_package_name}\\\";\nmodule.exports.VERSION = \\\"${npm_package_version}\\\";\" > index.js && babel src/ -d lib",
-    "prebuild": "npm run lint",
-    "clean": "rm -fr dist lib index.js",
-    "compress": "gzip -k -9 dist/*.js && bzip2 -k -9 dist/*.js",
-    "dist": "mkdir -p dist && npm run browserify && npm run minify && npm run compress",
-    "predist": "rm -f dist/* && npm run build",
+    "build": "NODE_ENV=production rollup -c",
+    "clean": "rm -fr .nyc_output coverage dist",
+    "compress": "gzip -fk -9 dist/iife/*.js && bzip2 -fk -9 dist/iife/*.js",
+    "dist": "npm run minify && npm run compress",
     "lint": "eslint --ignore-path .ignore .",
-    "minify": "uglifyjs dist/formsquare.js -mco dist/formsquare.min.js",
-    "prepare": "npm run build",
+    "minify": "minify dist/iife/formsquare.js --mangle -o dist/iife/formsquare.min.js",
+    "prepare": "npm run build && npm run dist",
     "pretty": "prettier --write --ignore-path .ignore **/*.{js,json}",
-    "test": "nyc ava",
+    "test": "NODE_ENV=test nyc ava",
     "test:report": "nyc report --reporter html"
   },
   "author": "Rúnar Berg Baugsson Sigríðarson <runarberg@zoho.com>",
@@ -35,16 +34,27 @@
       "test/**/*.js",
       "**/test.js",
       "**/*.test.js",
-      "!lib/**/*",
       "!dist/**/*"
     ],
     "require": "babel-register",
     "babel": "inherit"
   },
   "babel": {
-    "presets": [
-      "env"
-    ]
+    "env": {
+      "test": {
+        "sourceMaps": "inline",
+        "presets": [
+          [
+            "env",
+            {
+              "targets": {
+                "node": "current"
+              }
+            }
+          ]
+        ]
+      }
+    }
   },
   "nyc": {
     "exclude": [
@@ -66,19 +76,19 @@
     "ava": "^0.25.0",
     "babel-cli": "^6.26.0",
     "babel-eslint": "^8.2.5",
+    "babel-minify": "^0.4.3",
     "babel-preset-env": "^1.7.0",
-    "babelify": "^8.0.0",
     "browser-env": "^3.2.5",
-    "browserify": "^16.2.2",
     "coveralls": "^3.0.2",
-    "eslint": "^5.0.1",
+    "eslint": "^5.1.0",
     "eslint-config-prettier": "^2.9.0",
     "eslint-plugin-ava": "^4.5.1",
     "eslint-plugin-import": "^2.13.0",
-    "eslint-plugin-prettier": "^2.6.1",
+    "eslint-plugin-prettier": "^2.6.2",
     "nyc": "^12.0.2",
     "prettier": "1.13.7",
-    "uglify-js": "^3.4.3"
+    "rollup": "^0.62.0",
+    "rollup-plugin-babel": "^3.0.7"
   },
   "dependencies": {}
 }

@@ -1,6 +1,7 @@
 import browserEnv from "browser-env";
-import { readFile } from "./files";
 import test from "ava";
+
+import { readFile } from "./files.js";
 
 browserEnv(["window", "File", "FileReader", "btoa", "navigator"]);
 

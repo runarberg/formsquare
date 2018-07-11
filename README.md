@@ -15,7 +15,7 @@ npm install --save formsquare
 
 ### Usage
 
-#### ES6
+#### Module
 
 ```js
 import formsquare from "formsquare";
@@ -23,8 +23,8 @@ import formsquare from "formsquare";
 formsquare(form, filter);
 
 // or
-var serialize = formsquare(filter);
-serialize(form);
+const parseForm = formsquare(filter);
+parseForm(form);
 ```
 
 Where `form` is an `HTMLFormElement` (like `document.forms[0]`) and
@@ -36,7 +36,7 @@ Where `form` is an `HTMLFormElement` (like `document.forms[0]`) and
 Same as above except import with:
 
 ```js
-var formsquare = require("formsquare").default;
+const formsquare = require("formsquare");
 ```
 
 #### HTML
@@ -48,27 +48,17 @@ include this in your HTML file:
 <script src="formsquare.js"></script>
 ```
 
-**Note:** This will export the entire module under the namespace
-`formsquare`. So in order to use the default export, put this in your
-script:
-
-```
-formsquare = formsquare.default;
-```
-
-Then you can use the `formsquare` function intuitively.
-
 #### [More examples below](#examples)
 
 What makes formsquare different
 -------------------------------
 
 Formsquare is yet another [square bracket notation][spec] form to
-javascript object serializer, but smarter. Formsquare tries to be
-smart about your form structure and keep open most possible mappings
-to valid JSON objects. Formsquare will also take note of your
-HTML5 [form attributes][mdn/input#attr-form], even in
-[Internet Explorer][caniuse#form-attribute].
+javascript object parser, but smarter. Formsquare tries to be smart
+about your form structure and keep open most possible mappings to
+valid JSON objects. Formsquare will also take note of your HTML5 [form
+attributes][mdn/input#attr-form], even in [Internet
+Explorer][caniuse#form-attribute].
 
 For the first part formsquare tries to retain the types of your form
 elements.
@@ -116,10 +106,10 @@ Examples
 ```
 
 ```js
-var formsquare = require("formsquare");
+import formsquare from "formsquare";
 
-var form = document.getElementById("my-form");
-var filter = (el) => !el.disabled;
+const form = document.getElementById("my-form");
+const filter = (el) => !el.disabled;
 
 formsquare(form, filter);
 // {"foo": "bar"}
@@ -128,7 +118,7 @@ formsquare(form, filter);
 ### Currying
 
 You can pass only a predicate function to formsquare and be returned
-with a new serializer that will filter all form elements by that
+with a new parser that will filter all form elements by that
 predicate.
 
 ```html
@@ -144,13 +134,14 @@ predicate.
 ```
 
 ```js
-var formsquare = require("formsquare");
-var serialize = formsquare((el) => !el.disabled);
+import formsquare from "formsquare";
 
-serialize(document.forms[0]);
+const parseForm = formsquare((el) => !el.disabled);
+
+parseForm(document.forms[0]);
 // "foo"
 
-serialize(document.forms[1]);
+parseForm(document.forms[1]);
 // "bar"
 ```
 
@@ -177,7 +168,7 @@ singleton value.
 ```
 
 ```js
-var singletonForm = document.getElementById("singleton-form");
+const singletonForm = document.getElementById("singleton-form");
 formsquare(singletonForm);
 // 42
 
@@ -223,7 +214,7 @@ attribute:
 ```
 
 ```js
-var checkboxForm = document.getElementById("checkbox-form");
+const checkboxForm = document.getElementById("checkbox-form");
 formsquare(checkboxForm);
 // [false, true]
 ```
@@ -277,8 +268,8 @@ formsquare(document.forms[0]).then((file) => {
 Alternatives
 ------------
 
-If you want a more traditional form serializer, you could take a look
-at any of these:
+If you want a more traditional form parser, you could take a look at
+any of these:
 
 * [form2js](https://www.npmjs.com/package/form2js)
 * [form-parse](https://www.npmjs.com/package/form-parse)
