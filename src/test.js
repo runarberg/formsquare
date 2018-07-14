@@ -9,6 +9,68 @@ const checked = true;
 const disabled = true;
 const selected = true;
 
+function crel(tagName, attributes = {}, children = []) {
+  const el = document.createElement(tagName);
+
+  if (Array.isArray(attributes)) {
+    return crel(tagName, {}, attributes);
+  }
+
+  Object.keys(attributes).forEach(attr =>
+    el.setAttribute(attr, attributes[attr]),
+  );
+
+  children.forEach(child =>
+    el.appendChild(typeof child === "string" ? crel(child) : child),
+  );
+
+  return el;
+}
+
+function text(str) {
+  return document.createTextNode(str);
+}
+
+function input(attributes = {}) {
+  return crel("input", attributes);
+}
+
+function checkbox(attributes = {}) {
+  const el = input(attributes);
+
+  el.type = "checkbox";
+
+  return el;
+}
+
+function textarea(attributes, content) {
+  if (typeof attributes === "string") {
+    return textarea({}, attributes);
+  }
+
+  return crel("textarea", attributes, [text(content)]);
+}
+
+function select(attributes = {}, options = []) {
+  return crel("select", attributes, options);
+}
+
+function option(attributes, content) {
+  if (typeof attributes === "string") {
+    return option({}, attributes);
+  }
+
+  return crel("option", attributes, [text(content)]);
+}
+
+function form(attributes = {}, inputs = []) {
+  return crel("form", attributes, inputs);
+}
+
+function tform(inputs) {
+  return formsquare(form(inputs));
+}
+
 test("Types", t => {
   t.deepEqual(tform(), null, "null (empty form)");
 
@@ -128,7 +190,7 @@ test("Objects", t => {
 });
 
 test("Form elements", t => {
-  let loremIpsum = "Lorem ipsum dolar sit amet";
+  const loremIpsum = "Lorem ipsum dolar sit amet";
 
   t.deepEqual(
     tform([
@@ -193,7 +255,7 @@ test("Form elements", t => {
     "Textarea with name",
   );
 
-  let div = crel("div", [
+  const div = crel("div", [
     form({ id: "form-0" }, [
       checkbox({ name: "inside", checked }),
       input({ name: "both[0]", value: "foo" }),
@@ -381,7 +443,7 @@ test("Checkbox arrays", t => {
 });
 
 test("Filter", t => {
-  let someDisabled = form([
+  const someDisabled = form([
     input({ value: "disabled", disabled }),
     input({ value: "enabled" }),
   ]);
@@ -579,68 +641,3 @@ test("html-json-forms examples", t => {
     "Example 10: Bad Input",
   );
 });
-
-function tform(inputs) {
-  return formsquare(form(inputs));
-}
-
-function option(attributes, content) {
-  if (typeof attributes === "string") {
-    content = attributes;
-    attributes = {};
-  }
-
-  return crel("option", attributes, [text(content)]);
-}
-
-function select(attributes = {}, options = []) {
-  return crel("select", attributes, options);
-}
-
-function textarea(attributes, content) {
-  if (typeof attributes === "string") {
-    content = attributes;
-    attributes = {};
-  }
-
-  return crel("textarea", attributes, [text(content)]);
-}
-
-function checkbox(attributes = {}) {
-  let el = input(attributes);
-
-  el.type = "checkbox";
-
-  return el;
-}
-
-function input(attributes = {}) {
-  return crel("input", attributes);
-}
-
-function form(attributes = {}, inputs = []) {
-  return crel("form", attributes, inputs);
-}
-
-function text(str) {
-  return document.createTextNode(str);
-}
-
-function crel(tagName, attributes = {}, children = []) {
-  let el = document.createElement(tagName);
-
-  if (Array.isArray(attributes)) {
-    children = attributes;
-    attributes = {};
-  }
-
-  Object.keys(attributes).forEach(attr =>
-    el.setAttribute(attr, attributes[attr]),
-  );
-
-  children.forEach(child =>
-    el.appendChild(typeof child === "string" ? crel(child) : child),
-  );
-
-  return el;
-}

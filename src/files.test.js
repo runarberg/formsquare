@@ -10,6 +10,7 @@ test("readfile", t =>
     // JSDOM implements FilerReader#readAsDataURL() differently from
     // all the browsers. Until that is fixed, we need this spoof
     if (navigator.userAgent.match(/jsdom\/11\.\d+\.\d+$/)) {
+      // eslint-disable-next-line no-param-reassign
       file.body = btoa("foo");
     }
 

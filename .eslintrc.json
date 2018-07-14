@@ -10,11 +10,18 @@
   "plugins": ["ava", "import", "prettier"],
   "extends": [
     "eslint:recommended",
+    "airbnb-base",
     "plugin:import/errors",
     "plugin:ava/recommended",
     "plugin:prettier/recommended"
   ],
   "rules": {
-    "import/extensions": ["error", "always", { "ignorePackages": true }]
+    "import/extensions": ["error", "always", { "ignorePackages": true }],
+    "import/no-extraneous-dependencies": [
+      "error",
+      {
+        "devDependencies": ["rollup.config.js", "**/test.js", "**/*.test.js"]
+      }
+    ]
   }
 }
