@@ -1,5 +1,7 @@
+/* eslint no-use-before-define: ["error", { "functions": false }] */
+
 export function any(p, arr) {
-  let len = arr.length;
+  const len = arr.length;
 
   for (let i = 0; i < len; i += 1) {
     if (p(arr[i])) {
@@ -15,7 +17,7 @@ export function constant(x) {
 }
 
 export function contains(el, arr) {
-  let len = arr.length;
+  const len = arr.length;
 
   for (let i = 0; i < len; i += 1) {
     if (arr[i] === el) {
@@ -27,7 +29,7 @@ export function contains(el, arr) {
 }
 
 export function extendUniq(a, b) {
-  let len = b.length;
+  const len = b.length;
 
   for (let i = 0; i < len; i += 1) {
     if (!contains(b[i], a)) {
@@ -39,8 +41,8 @@ export function extendUniq(a, b) {
 }
 
 export function filter(p, arr) {
-  let filtered = [];
-  let len = arr.length;
+  const filtered = [];
+  const len = arr.length;
 
   for (let i = 0; i < len; i += 1) {
     if (p(arr[i])) {
@@ -54,8 +56,8 @@ export function filter(p, arr) {
 export function flatMap(fn, arr) {
   return reduce(
     (acc, el) => {
-      let collection = fn(el);
-      let len = collection.length;
+      const collection = fn(el);
+      const len = collection.length;
 
       for (let i = 0; i < len; i += 1) {
         acc.push(collection[i]);
@@ -69,8 +71,8 @@ export function flatMap(fn, arr) {
 }
 
 export function map(fn, arr) {
-  let mapped = [];
-  let len = arr.length;
+  const mapped = [];
+  const len = arr.length;
 
   for (let i = 0; i < len; i += 1) {
     mapped.push(fn(arr[i]));
@@ -79,8 +81,9 @@ export function map(fn, arr) {
   return mapped;
 }
 
-export function reduce(fn, acc, arr) {
-  let len = arr.length;
+export function reduce(fn, init, arr) {
+  let acc = init;
+  const len = arr.length;
 
   for (let i = 0; i < len; i += 1) {
     acc = fn(acc, arr[i]);
@@ -90,7 +93,7 @@ export function reduce(fn, acc, arr) {
 }
 
 export function selectedValues(select) {
-  let options =
+  const options =
     select.selectedOptions || filter(option => option.selected, select.options);
 
   return map(option => option.value, options);
