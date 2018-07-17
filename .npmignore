@@ -1,5 +1,6 @@
 .nyc_output/
 coverage/
+flow-typed
 formsquare-*.tgz
 src/**/*.test.js
 src/**/test.js

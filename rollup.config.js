@@ -6,6 +6,7 @@ export default [
     plugins: [
       babel({
         exclude: "node_modules/**",
+        presets: ["flow"],
       }),
     ],
     output: {
@@ -19,6 +20,7 @@ export default [
       babel({
         exclude: "node_modules/**",
         presets: [
+          "flow",
           [
             "env",
             {
