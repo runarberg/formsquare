@@ -25,7 +25,8 @@
     "prepare": "npm run build && npm run dist",
     "pretty": "prettier --write --ignore-path .ignore **/*.{js,json}",
     "test": "NODE_ENV=test nyc ava",
-    "test:report": "nyc report --reporter html"
+    "test:report": "nyc report --reporter html",
+    "type": "flow"
   },
   "author": "Rúnar Berg Baugsson Sigríðarson <runarberg@zoho.com>",
   "license": "MIT",
@@ -44,6 +45,7 @@
       "test": {
         "sourceMaps": "inline",
         "presets": [
+          "flow",
           [
             "env",
             {
@@ -78,6 +80,7 @@
     "babel-eslint": "^8.2.6",
     "babel-minify": "^0.4.3",
     "babel-preset-env": "^1.7.0",
+    "babel-preset-flow": "^6.23.0",
     "browser-env": "^3.2.5",
     "coveralls": "^3.0.2",
     "eslint": "^5.1.0",
@@ -86,6 +89,7 @@
     "eslint-plugin-ava": "^4.5.1",
     "eslint-plugin-import": "^2.13.0",
     "eslint-plugin-prettier": "^2.6.2",
+    "flow-bin": "^0.76.0",
     "nyc": "^12.0.2",
     "prettier": "1.13.7",
     "rollup": "^0.62.0",

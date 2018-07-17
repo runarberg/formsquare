@@ -1,5 +1,6 @@
 .nyc_output/
 coverage/
 dist/
+flow-typed
 formsquare-*.tgz
 node_modules/
