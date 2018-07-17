@@ -68,7 +68,7 @@ function form(attributes = {}, inputs = []) {
 }
 
 function tform(inputs) {
-  return formsquare(form(inputs));
+  return formsquare.parse(form(inputs));
 }
 
 test("Types", t => {
@@ -267,7 +267,7 @@ test("Form elements", t => {
   document.documentElement.appendChild(div);
 
   t.deepEqual(
-    formsquare(document.getElementById("form-0")),
+    formsquare.parse(document.getElementById("form-0")),
     { inside: true, outside: loremIpsum, both: ["foo", "bar"] },
     "Outside and inside forms",
   );
@@ -448,51 +448,101 @@ test("Filter", t => {
     input({ value: "enabled" }),
   ]);
 
-  t.true(typeof formsquare(x => x) === "function", "Curry");
+  t.is(formsquare.filter(el => !el.disabled).parse(someDisabled), "enabled");
+  t.is(formsquare.filter(el => el.disabled).parse(someDisabled), "disabled");
+});
 
-  t.is(formsquare(someDisabled, el => !el.disabled), "enabled", "No disabled");
-
+test("Filters - classes", t => {
   t.is(
-    formsquare(el => !el.disabled)(someDisabled),
-    "enabled",
-    "No disabled -- curry",
-  );
-
-  t.is(
-    formsquare(someDisabled, el => el.disabled),
-    "disabled",
-    "Only disabled",
-  );
-
-  t.is(
-    formsquare(
-      form([
-        input({ class: "shown", value: "shown" }),
-        input({ class: "hidden", value: "hidden" }),
-      ]),
-      el => !el.classList.contains("hidden"),
-    ),
+    formsquare
+      .filter(el => !el.classList.contains("hidden"))
+      .parse(
+        form([
+          input({ class: "shown", value: "shown" }),
+          input({ class: "hidden", value: "hidden" }),
+        ]),
+      ),
     "shown",
-    "No hidden",
+  );
+});
+
+test("Filters return a bound object", t => {
+  const { parse } = formsquare.filter(el => !el.disabled);
+
+  t.is(
+    parse(
+      form([
+        input({ value: "disabled", disabled }),
+        input({ value: "enabled" }),
+      ]),
+    ),
+    "enabled",
   );
 
   t.is(
-    formsquare(
+    parse(
       form([
-        checkbox({ value: "enabled", checked }),
-        checkbox({ value: "disabled", checked, disabled }),
+        input({ value: "disabled", disabled }),
+        input({ value: "second call is OK" }),
       ]),
-      el => !el.disabled,
     ),
+    "second call is OK",
+  );
+});
+
+test("Filters - chaining works", t => {
+  const someDisabled = form([
+    input({ value: "disabled", disabled }),
+    input({ value: "hidden", class: "hidden" }),
+    input({ value: "enabled" }),
+  ]);
+
+  t.is(
+    formsquare
+      .filter(el => !el.disabled)
+      .filter(el => !el.classList.contains("hidden"))
+      .parse(someDisabled),
     "enabled",
-    "Does not affect array behavior",
+  );
+});
+
+test("Filters - chaining works does not mutate old parser", t => {
+  const someDisabled = form([
+    input({ value: "disabled", disabled }),
+    input({ value: "hidden", class: "hidden" }),
+    input({ value: "enabled" }),
+  ]);
+
+  const myParser = formsquare.filter(el => !el.disabled);
+
+  t.deepEqual(myParser.parse(someDisabled), ["hidden", "enabled"]);
+
+  t.is(
+    myParser.filter(el => !el.classList.contains("hidden")).parse(someDisabled),
+    "enabled",
+  );
+
+  t.deepEqual(myParser.parse(someDisabled), ["hidden", "enabled"]);
+});
+
+test("Filters do not affect array behavior", t => {
+  t.is(
+    formsquare
+      .filter(el => !el.disabled)
+      .parse(
+        form([
+          checkbox({ value: "enabled", checked }),
+          checkbox({ value: "disabled", checked, disabled }),
+        ]),
+      ),
+    "enabled",
     // I.e. not ["enabled", "disabled"].
   );
 });
 
 test("Collections of forms", t => {
   t.deepEqual(
-    formsquare(
+    formsquare.parse(
       crel("div", [
         form([input({ name: "foo", value: "bar" })]),
         form([input({ name: "baz", value: "quux" })]),
@@ -503,7 +553,7 @@ test("Collections of forms", t => {
   );
 
   t.deepEqual(
-    formsquare(
+    formsquare.parse(
       crel("div", [
         form([input({ type: "number", value: "5" })]),
         form([input({ type: "number", value: "42" })]),
@@ -514,7 +564,7 @@ test("Collections of forms", t => {
   );
 
   t.deepEqual(
-    formsquare([
+    formsquare.parse([
       form([input({ name: "foo", value: "bar" })]),
       form([input({ name: "baz", value: "quux" })]),
     ]),

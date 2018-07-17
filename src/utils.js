@@ -1,5 +1,21 @@
 /* eslint no-use-before-define: ["error", { "functions": false }] */
 
+export function all(p, arr) {
+  const len = arr.length;
+
+  for (let i = 0; i < len; i += 1) {
+    if (!p(arr[i])) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+export function allPass(ps) {
+  return x => all(p => p(x), ps);
+}
+
 export function any(p, arr) {
   const len = arr.length;
 
@@ -10,10 +26,6 @@ export function any(p, arr) {
   }
 
   return false;
-}
-
-export function constant(x) {
-  return () => x;
 }
 
 export function contains(el, arr) {

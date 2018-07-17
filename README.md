@@ -20,16 +20,15 @@ npm install --save formsquare
 ```js
 import formsquare from "formsquare";
 
-formsquare(form, filter);
+formsquare.parse(form);
 
 // or
-const parseForm = formsquare(filter);
-parseForm(form);
+formsquare.filter(myFilter).parse(form);
 ```
 
 Where `form` is an `HTMLFormElement` (like `document.forms[0]`) and
-`filter` is an optional predicate function (like `(el) =>
-!el.disabled`) that determines which form elements to include.
+`myFilter` is a predicate function (like `el => !el.disabled`) that
+determines which form elements to include.
 
 #### commonjs
 
@@ -109,17 +108,16 @@ Examples
 import formsquare from "formsquare";
 
 const form = document.getElementById("my-form");
-const filter = (el) => !el.disabled;
+const filter = el => !el.disabled;
 
-formsquare(form, filter);
-// {"foo": "bar"}
+formsquare.filter(filter).parse(form);
+//=> {"foo": "bar"}
 ```
 
-### Currying
+### Filters
 
-You can pass only a predicate function to formsquare and be returned
-with a new parser that will filter all form elements by that
-predicate.
+You can call `formsquare.filter` with a predicate be returned a new
+parser that will filter all form elements by that predicate.
 
 ```html
 <form>
@@ -131,18 +129,32 @@ predicate.
   <input value="foo" disabled>
   <input value="bar">
 </form>
+
+<form>
+  <input value="foo" disabled>
+  <input value="bar" class="hidden">
+  <input value="baz">
+</form>
 ```
 
 ```js
 import formsquare from "formsquare";
 
-const parseForm = formsquare((el) => !el.disabled);
+const { parse } = formsquare.filter(el => !el.disabled);
 
-parseForm(document.forms[0]);
-// "foo"
+parse(document.forms[0]);
+//=> "foo"
 
-parseForm(document.forms[1]);
-// "bar"
+parse(document.forms[1]);
+//=> "bar"
+
+// Filters can be chained
+
+formsquare
+  .filter(el => !el.disabled)
+  .filter(el => !el.classList.contains("hidden"))
+  .parse(document.forms[2]);
+//=> "baz"
 ```
 
 ### Simple forms
@@ -154,8 +166,8 @@ An empty form will always return `null`
 ```
 
 ```js
-formsquare(document.getElementById("empty-form"));
-// null
+formsquare.parse(document.getElementById("empty-form"));
+//=> null
 ```
 
 A form with a single element without an explicit name gives you a
@@ -169,12 +181,12 @@ singleton value.
 
 ```js
 const singletonForm = document.getElementById("singleton-form");
-formsquare(singletonForm);
-// 42
+formsquare.parse(singletonForm);
+//=> 42
 
 singletonForm[0].type = "text";
-formsquare(singletonForm);
-// "42"
+formsquare.parse(singletonForm);
+//=> "42"
 ```
 
 ### Collections of forms
@@ -194,11 +206,11 @@ it will be handled as a single form.
 ```
 
 ```js
-formsquare(document.forms);
-// {"foo": [2, 42], "bar": 5}
+formsquare.parse(document.forms);
+//=> {"foo": [2, 42], "bar": 5}
 
-[...document.forms].map(formsquare(() => true));
-// [{"foo": 2, "bar": 5}, {"foo": 42}]
+[...document.forms].map(formsquare.parse);
+//=> [{"foo": 2, "bar": 5}, {"foo": 42}]
 ```
 
 ### Checkboxes
@@ -215,8 +227,8 @@ attribute:
 
 ```js
 const checkboxForm = document.getElementById("checkbox-form");
-formsquare(checkboxForm);
-// [false, true]
+formsquare.parse(checkboxForm);
+//=> [false, true]
 ```
 
 Checkboxes with explicit values are handled differently:
@@ -225,8 +237,8 @@ Checkboxes with explicit values are handled differently:
 checkboxForm[0].value = "false";
 checkboxForm[1].value = "on";
 
-formsquare(checkboxForm);
-// ["on"]
+formsquare.parse(checkboxForm);
+//=> ["on"]
 ```
 
 And if no checkbox is checked, you will get the empty array:
@@ -234,8 +246,8 @@ And if no checkbox is checked, you will get the empty array:
 ```js
 checkboxForm[1].checked = false;
 
-formsquare(checkboxForm);
-// []
+formsquare.parse(checkboxForm);
+//=> []
 ```
 
 ### Files
@@ -254,15 +266,13 @@ Granted that a user uploaded the file `foo.txt` conatining the text
 `foo`:
 
 ```js
-formsquare(document.forms[0]).then((file) => {
-  console.log(file);
-});
+await formsquare.parse(document.forms[0]);
 
-// {
-//   "body": "Zm9v",
-//   "name": "foo.txt",
-//   "type": "text/plain"
-// }
+//=> {
+//     body: "Zm9v",
+//     name: "foo.txt",
+//     type: "text/plain",
+//   }
 ```
 
 Alternatives

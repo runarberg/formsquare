@@ -5,7 +5,10 @@
     <title>Formsquare examples</title>
     <style>
       .example output {
+        display: block;
         font-family: monospace;
+        max-width: 100%;
+        overflow-x: auto;
         white-space: pre;
       }
     </style>
@@ -31,7 +34,7 @@
 
           const div = document.getElementById("readme-example-basic");
           const form = div.querySelector("form");
-          const obj = formsquare(form, el => !el.disabled);
+          const obj = formsquare.filter(el => !el.disabled).parse(form);
           const output = div.querySelector("output");
 
           output.textContent = JSON.stringify(obj);
@@ -53,7 +56,7 @@
           {
             const div = document.getElementById("readme-example-basic-nomodule");
             const form = div.querySelector("form");
-            const obj = formsquare(form, el => !el.disabled);
+            const obj = formsquare.filter(el => !el.disabled).parse(form);
             const output = div.querySelector("output");
 
             output.textContent = JSON.stringify(obj);
@@ -61,8 +64,8 @@
         </script>
       </div>
 
-      <div class="example" id="readme-example-curry">
-        <h3>Curry</h3>
+      <div class="example" id="readme-example-filters">
+        <h3>Filters</h3>
 
         <form>
           <input value="foo">
@@ -74,21 +77,34 @@
           <input value="bar">
         </form>
 
+        <form>
+          <input value="foo" disabled>
+          <input value="bar" class="hidden">
+          <input value="baz">
+        </form>
+
         <output></output>
 
         <script type="module">
           import formsquare from "/dist/module/formsquare.js";
 
-          const div = document.getElementById("readme-example-curry");
-          const parseForm = formsquare(el => !el.disabled);
-
+          const { parse } = formsquare.filter(el => !el.disabled);
+          const div = document.getElementById("readme-example-filters");
           const forms = div.querySelectorAll("form");
           const output = div.querySelector("output");
+          const parsed = [];
 
-          output.textContent = [...forms]
-            .map(parseForm)
-            .map(JSON.stringify)
-            .join("\n");
+          parsed.push(parse(forms[0]));
+          parsed.push(parse(forms[1]))
+
+          parsed.push(
+            formsquare
+              .filter(el => !el.disabled)
+              .filter(el => !el.classList.contains("hidden"))
+              .parse(forms[2]),
+          );
+
+          output.textContent = parsed.map(JSON.stringify).join("\n");
         </script>
       </div>
 
@@ -104,7 +120,7 @@
 
           const div = document.getElementById("readme-example-empty");
           const form = div.querySelector("form");
-          const obj = formsquare(form);
+          const obj = formsquare.parse(form);
           const output = div.querySelector("output");
 
           output.textContent = JSON.stringify(obj);
@@ -128,10 +144,10 @@
           const output = div.querySelector("output");
           const strings = [];
 
-          strings.push(JSON.stringify(formsquare(form)));
+          strings.push(JSON.stringify(formsquare.parse(form)));
 
           form[0].type = "text";
-          strings.push(JSON.stringify(formsquare(form)));
+          strings.push(JSON.stringify(formsquare.parse(form)));
 
           output.textContent = strings.join("\n");
         </script>
@@ -155,11 +171,11 @@
           const output = div.querySelector("output");
           const strings = [];
 
-          strings.push(JSON.stringify(formsquare(form)));
+          strings.push(JSON.stringify(formsquare.parse(form)));
 
           form[0].value = "false";
           form[1].value = "on"
-          strings.push(JSON.stringify(formsquare(form)));
+          strings.push(JSON.stringify(formsquare.parse(form)));
 
           output.textContent = strings.join("\n");
         </script>
@@ -180,7 +196,7 @@
           const div = document.getElementById("readme-example-week");
           const form = div.querySelector("form");
           const output = div.querySelector("output");
-          const string = JSON.stringify(formsquare(form));
+          const string = JSON.stringify(formsquare.parse(form));
 
           output.textContent = string;
         </script>
@@ -202,8 +218,12 @@
           const form = div.querySelector("form");
           const output = div.querySelector("output");
 
-          formsquare(form).then((data) => {
-            output.textContent = JSON.stringify(data);
+          form.addEventListener("input", event => {
+            formsquare
+              .parse(form)
+              .then((data) => {
+                output.textContent = JSON.stringify(data);
+              });
           });
         </script>
       </div>
@@ -225,13 +245,14 @@
         <script type="module">
           import formsquare from "/dist/module/formsquare.js";
 
+          const { parse } = formsquare;
           const div = document.getElementById("readme-example-form-collection");
           const forms = div.querySelectorAll("form");
           const output = div.querySelector("output");
           const strings = [];
 
-          strings.push(JSON.stringify(formsquare(forms)));
-          strings.push(JSON.stringify([...forms].map(formsquare(() => true))));
+          strings.push(JSON.stringify(parse(forms)));
+          strings.push(JSON.stringify([...forms].map(parse)));
 
           output.textContent = strings.join("\n");
         </script>
