@@ -16,7 +16,7 @@
     "url": "https://github.com/runarberg/formsquare.git"
   },
   "scripts": {
-    "build": "NODE_ENV=production rollup -c",
+    "build": "NODE_ENV=production rollup -c && npm run type:defs",
     "clean": "rm -fr .nyc_output coverage dist",
     "compress": "gzip -fk -9 dist/iife/*.js && bzip2 -fk -9 dist/iife/*.js",
     "dist": "npm run minify && npm run compress",
@@ -26,7 +26,8 @@
     "pretty": "prettier --write --ignore-path .ignore **/*.{js,json}",
     "test": "NODE_ENV=test nyc ava",
     "test:report": "nyc report --reporter html",
-    "type": "flow"
+    "type": "flow",
+    "type:defs": "cp src/module.js \"$npm_package_main.flow\" && cp src/module.js \"$npm_package_module.flow\" && cp src/module.js \"$npm_package_unpkg.flow\""
   },
   "author": "Rúnar Berg Baugsson Sigríðarson <runarberg@zoho.com>",
   "license": "MIT",

@@ -1,0 +1,8 @@
+// @flow
+
+export interface Formsquare {
+  filter((HTMLElement) => boolean): Formsquare;
+  parse(HTMLFormElement | Array<HTMLFormElement>): any;
+}
+
+declare export default Formsquare;
