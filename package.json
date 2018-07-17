@@ -36,6 +36,7 @@
       "test/**/*.js",
       "**/test.js",
       "**/*.test.js",
+      "!**/utils.js",
       "!dist/**/*"
     ],
     "require": "babel-register",
