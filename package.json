@@ -1,6 +1,6 @@
 {
   "name": "formsquare",
-  "version": "0.7.0",
+  "version": "1.0.0-beta.1",
   "description": "Serialize html5 forms the smart way",
   "keywords": [
     "form",
