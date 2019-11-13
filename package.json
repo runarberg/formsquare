@@ -85,7 +85,7 @@
     "ava": "^2.4.0",
     "babel-eslint": "^8.2.6",
     "babel-minify": "^0.5.1",
-    "browser-env": "^3.2.5",
+    "browser-env": "^3.3.0",
     "coveralls": "^3.0.2",
     "eslint": "^5.1.0",
     "eslint-config-airbnb-base": "^13.0.0",
