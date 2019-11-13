@@ -11,7 +11,7 @@ import {
   startsWith,
 } from "./utils.js";
 
-function getValue(input) {
+function getValue(input, maps = []) {
   if (input.type === "select-multiple") {
     return selectedValues(input);
   }
@@ -48,7 +48,12 @@ function getValue(input) {
     return readFile(input.files[0]);
   }
 
-  return input.value;
+  let { value } = input;
+  maps.forEach(fn => {
+    value = fn(value, input);
+  });
+
+  return value;
 }
 
 function fillSparse(node, attr) {
@@ -132,7 +137,7 @@ function nonMember(obj, path) {
   return node;
 }
 
-export default function parse(elements) {
+export default function parse(elements, maps) {
   function setValue(obj, input) {
     const { name, type } = input;
     let { value } = input;
@@ -153,7 +158,7 @@ export default function parse(elements) {
       }
       value = null;
     } else {
-      value = getValue(input);
+      value = getValue(input, maps);
     }
 
     if (path.length === 0) {
