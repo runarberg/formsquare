@@ -12,14 +12,22 @@ interface Formsquare {
 
 function newFormsquare({
   filters = [],
+  maps = [],
 }: {
   filters?: Array<(HTMLElement) => boolean>,
+  maps?: Array<(Function) => any>,
 } = {}): Formsquare {
   const formsquare: any = Object.create(null);
 
   Object.defineProperty(formsquare, "filter", {
     value(p: HTMLElement => boolean): Formsquare {
-      return newFormsquare({ filters: [...filters, p] });
+      return newFormsquare({ filters: [...filters, p], maps });
+    },
+  });
+
+  Object.defineProperty(formsquare, "map", {
+    value(p: Function => any): Formsquare {
+      return newFormsquare({ maps: [...maps, p], filters });
     },
   });
 
@@ -27,7 +35,7 @@ function newFormsquare({
     value(form: HTMLFormElement | Array<HTMLFormElement>): any {
       const elements = filter(allPass(filters), formElements(form));
 
-      return parse(elements);
+      return parse(elements, maps);
     },
   });
 
