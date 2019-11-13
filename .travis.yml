@@ -9,8 +9,15 @@ script:
   - npm test
 after_script:
   - npx nyc report --reporter=text-lcov | npx coveralls
-deploy:
-  provider: npm
-  on:
-    tags: true
-  edge: true # opt in to dpl v2
+stages:
+- test
+- deploy
+jobs:
+  include:
+    - stage: deploy
+      node_js: lts/*
+      deploy:
+        provider: npm
+        on:
+          tags: true
+        edge: true # opt in to dpl v2
