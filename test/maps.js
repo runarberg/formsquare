@@ -17,15 +17,13 @@ test("data-type", t => {
 
   t.deepEqual(
     formsquare
-      .map(
-        (defaultValue, el) =>
-          el.dataset.type === "number"
-            ? Number.parseFloat(el.value)
-            : defaultValue,
+      .map((defaultValue, el) =>
+        el.dataset.type === "number"
+          ? Number.parseFloat(el.value)
+          : defaultValue,
       )
-      .map(
-        (defaultValue, el) =>
-          el.dataset.type === "date" ? new Date(el.value) : defaultValue,
+      .map((defaultValue, el) =>
+        el.dataset.type === "date" ? new Date(el.value) : defaultValue,
       )
       .parse(inputs),
     { date: new Date("2018-09-01"), number: 1 },
