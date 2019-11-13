@@ -50,5 +50,5 @@ test("file", async t => {
   // We are not able to test real file input in real browsers:
   const file = await tform([input({ type: "file" })]);
 
-  t.deepEqual(file, null, "File");
+  t.is(file, null, "File");
 });

@@ -24,6 +24,9 @@ test("arrays of objects", t => {
       input({ name: "[1][name]", value: "bar" }),
       input({ type: "number", name: "[1][value]", value: "42" }),
     ]),
-    [{ name: "foo", value: 5 }, { name: "bar", value: 42 }],
+    [
+      { name: "foo", value: 5 },
+      { name: "bar", value: 42 },
+    ],
   );
 });
