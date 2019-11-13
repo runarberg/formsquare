@@ -41,8 +41,8 @@ test("date", t => {
 
 test("datetime-local", t => {
   t.deepEqual(
-    tform([input({ type: "datetime-local", value: "1989-03-10T21:00:44" })]),
-    new Date("1989-03-10T21:00:44"),
+    tform([input({ type: "datetime-local", value: "1989-03-10T21:00:00" })]),
+    new Date("1989-03-10T21:00:00"),
   );
 });
 

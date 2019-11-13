@@ -159,7 +159,7 @@ test("Example 9: Files", async t => {
 
   // JSDOM implements FilerReader#readAsDataURL() differently from
   // all the browsers. Until that is fixed, we need this spoof
-  if (navigator.userAgent.match(/jsdom\/11\.\d+\.\d+$/)) {
+  if (navigator.userAgent.match(/jsdom\/1[1-3]\.\d+\.\d+$/)) {
     result.file.forEach(file => {
       const { body } = file;
       // eslint-disable-next-line no-param-reassign
