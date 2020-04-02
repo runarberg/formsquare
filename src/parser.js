@@ -5,6 +5,7 @@ import { getWeek } from "./values.js";
 import {
   any,
   contains,
+  isObject,
   map,
   reduce,
   selectedValues,
@@ -168,7 +169,13 @@ export default function parse(elements, maps) {
       }
 
       if (!Array.isArray(obj)) {
-        return [obj, value];
+        if (!isObject(obj)) {
+          return [obj, value];
+        }
+
+        Object.assign(obj, { [Object.keys(obj).length]: value });
+
+        return obj;
       }
 
       obj.push(value);

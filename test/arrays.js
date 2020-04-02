@@ -43,3 +43,15 @@ test("sparse", (t) => {
     ["bar", null, "foo"],
   );
 });
+
+// Issue #21
+// https://github.com/runarberg/formsquare/issues/21
+test("unnamed sandwiched", (t) => {
+  const values = tform([
+    input({ value: "foo", name: "foo" }),
+    input({ value: "one" }),
+    input({ value: "bar", name: "bar" }),
+  ]);
+
+  t.deepEqual(values, { foo: "foo", 1: "one", bar: "bar" });
+});

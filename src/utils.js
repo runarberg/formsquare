@@ -82,6 +82,30 @@ export function flatMap(fn, arr) {
   );
 }
 
+export function isObject(value) {
+  if (!value) {
+    return false;
+  }
+
+  if (
+    value instanceof Date ||
+    value instanceof Promise ||
+    Array.isArray(value)
+  ) {
+    return false;
+  }
+
+  const type = typeof value;
+
+  return (
+    type !== "bigint" &&
+    type !== "boolean" &&
+    type !== "number" &&
+    type !== "string" &&
+    type !== "symbol"
+  );
+}
+
 export function map(fn, arr) {
   const mapped = [];
   const len = arr.length;
