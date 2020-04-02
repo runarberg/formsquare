@@ -13,7 +13,7 @@ export function all(p, arr) {
 }
 
 export function allPass(ps) {
-  return x => all(p => p(x), ps);
+  return (x) => all((p) => p(x), ps);
 }
 
 export function any(p, arr) {
@@ -106,9 +106,10 @@ export function reduce(fn, init, arr) {
 
 export function selectedValues(select) {
   const options =
-    select.selectedOptions || filter(option => option.selected, select.options);
+    select.selectedOptions ||
+    filter((option) => option.selected, select.options);
 
-  return map(option => option.value, options);
+  return map((option) => option.value, options);
 }
 
 export function startsWith(match, string) {

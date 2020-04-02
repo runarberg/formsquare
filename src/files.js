@@ -24,7 +24,7 @@ export function readFile(file) {
 
   reader.readAsDataURL(file);
 
-  return loaded.then(event => {
+  return loaded.then((event) => {
     // data:text/plain;base64,Zm9vCg
     const { type, body } = splitDataURL(event.target.result);
 

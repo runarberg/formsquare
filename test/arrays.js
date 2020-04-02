@@ -2,7 +2,7 @@ import test from "ava";
 
 import { tform, input } from "./utils.js";
 
-test("square brackets", t => {
+test("square brackets", (t) => {
   t.deepEqual(tform([input({ name: "[]", value: "bar" })]), ["bar"]);
 
   t.deepEqual(
@@ -14,7 +14,7 @@ test("square brackets", t => {
   );
 });
 
-test("multiple no-named values", t => {
+test("multiple no-named values", (t) => {
   t.deepEqual(
     tform([
       input({ name: "", value: "foo" }),
@@ -24,7 +24,7 @@ test("multiple no-named values", t => {
   );
 });
 
-test("enumerated", t => {
+test("enumerated", (t) => {
   t.deepEqual(
     tform([
       input({ name: "[1]", value: "foo" }),
@@ -34,7 +34,7 @@ test("enumerated", t => {
   );
 });
 
-test("sparse", t => {
+test("sparse", (t) => {
   t.deepEqual(
     tform([
       input({ name: "[2]", value: "foo" }),

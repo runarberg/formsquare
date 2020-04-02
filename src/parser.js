@@ -49,7 +49,7 @@ function getValue(input, maps = []) {
   }
 
   let { value } = input;
-  maps.forEach(fn => {
+  maps.forEach((fn) => {
     value = fn(value, input);
   });
 
@@ -152,7 +152,7 @@ export default function parse(elements, maps) {
     } else if (type === "checkbox" && !input.checked) {
       if (
         hasArrayLeaf(path) ||
-        any(other => other.name === name && other !== input, elements)
+        any((other) => other.name === name && other !== input, elements)
       ) {
         return nonMember(obj, path);
       }
@@ -182,7 +182,7 @@ export default function parse(elements, maps) {
     const asObject =
       typeof attr !== "number" &&
       any(
-        other =>
+        (other) =>
           startsWith(name, other.name) &&
           other !== input &&
           other.name.slice(name.length).match(/\[[^\]]\]/),

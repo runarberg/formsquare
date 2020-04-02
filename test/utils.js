@@ -11,11 +11,11 @@ export function crel(tagName, attributes = {}, children = []) {
     return crel(tagName, {}, attributes);
   }
 
-  Object.keys(attributes).forEach(attr =>
+  Object.keys(attributes).forEach((attr) =>
     el.setAttribute(attr, attributes[attr]),
   );
 
-  children.forEach(child =>
+  children.forEach((child) =>
     el.appendChild(typeof child === "string" ? crel(child) : child),
   );
 
