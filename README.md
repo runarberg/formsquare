@@ -40,11 +40,24 @@ const formsquare = require("formsquare");
 
 #### HTML
 
-Download the [full][full-code] or [minified][minified-code] code and
-include this in your HTML file:
+Download the [full script][full-script] or [minified script][min-script]
+and include this in your HTML file:
 
 ```html
 <script src="formsquare.js"></script>
+<script>
+  // use `formsquare` below.
+</script>
+```
+
+Or download the [module][full-module] and import it:
+
+```html
+<script module>
+  import formsquare from "/path/to/module/formsquare.js";
+
+  // Use `formsquare` below.
+</script>
 ```
 
 #### [More examples below](#examples)
