@@ -2,41 +2,41 @@ import test from "ava";
 
 import { checkbox, input, tform } from "./utils.js";
 
-test("unchecked", t => {
+test("unchecked", (t) => {
   t.false(tform([checkbox()]));
 });
 
-test("checked", t => {
+test("checked", (t) => {
   t.true(tform([checkbox({ checked: true })]));
 });
 
-test("with name - unchecked", t => {
+test("with name - unchecked", (t) => {
   t.deepEqual(tform([checkbox({ name: "foo" })]), { foo: false });
 });
 
-test("with name - checked", t => {
+test("with name - checked", (t) => {
   t.deepEqual(tform([checkbox({ name: "foo", checked: true })]), { foo: true });
 });
 
-test("with value - unchecked", t => {
+test("with value - unchecked", (t) => {
   t.is(tform([checkbox({ value: "bar" })]), null);
 });
 
-test("with value - checked", t => {
+test("with value - checked", (t) => {
   t.is(tform([checkbox({ value: "bar", checked: true })]), "bar");
 });
 
-test("with name and value - unchecked", t => {
+test("with name and value - unchecked", (t) => {
   t.deepEqual(tform([checkbox({ name: "foo", value: "bar" })]), { foo: null });
 });
 
-test("with name and value - checked", t => {
+test("with name and value - checked", (t) => {
   t.deepEqual(tform([checkbox({ name: "foo", value: "bar", checked: true })]), {
     foo: "bar",
   });
 });
 
-test('with name="[]"', t => {
+test('with name="[]"', (t) => {
   t.deepEqual(
     tform([
       checkbox({ name: "[]", value: "foo", checked: true }),
@@ -47,7 +47,7 @@ test('with name="[]"', t => {
   );
 });
 
-test('with name="[]" - empty', t => {
+test('with name="[]" - empty', (t) => {
   t.deepEqual(
     tform([
       checkbox({ name: "[]", value: "foo" }),
@@ -58,7 +58,7 @@ test('with name="[]" - empty', t => {
   );
 });
 
-test("multiple no name", t => {
+test("multiple no name", (t) => {
   t.deepEqual(
     tform([
       checkbox({ value: "foo", checked: true }),
@@ -69,7 +69,7 @@ test("multiple no name", t => {
   );
 });
 
-test("multiple no name - empty", t => {
+test("multiple no name - empty", (t) => {
   t.deepEqual(
     tform([
       checkbox({ value: "foo" }),
@@ -80,7 +80,7 @@ test("multiple no name - empty", t => {
   );
 });
 
-test('with name="leaf[]"', t => {
+test('with name="leaf[]"', (t) => {
   t.deepEqual(
     tform([
       input({ name: "name", value: "foo" }),
@@ -93,7 +93,7 @@ test('with name="leaf[]"', t => {
   );
 });
 
-test('with name="leaf[]" - first empty', t => {
+test('with name="leaf[]" - first empty', (t) => {
   t.deepEqual(
     tform([
       checkbox({ name: "values[]", value: "foo" }),
@@ -105,7 +105,7 @@ test('with name="leaf[]" - first empty', t => {
   );
 });
 
-test('with name="leaf[]" - all empty', t => {
+test('with name="leaf[]" - all empty', (t) => {
   t.deepEqual(
     tform([
       input({ name: "name", value: "foo" }),
@@ -117,7 +117,7 @@ test('with name="leaf[]" - all empty', t => {
   );
 });
 
-test('with name="leaf[]" - single leaf', t => {
+test('with name="leaf[]" - single leaf', (t) => {
   t.deepEqual(
     tform([
       checkbox({ name: "values[]", value: "bar", checked: true }),
@@ -128,7 +128,7 @@ test('with name="leaf[]" - single leaf', t => {
   );
 });
 
-test('with name="leaf[]" - all empty and single leaf', t => {
+test('with name="leaf[]" - all empty and single leaf', (t) => {
   t.deepEqual(
     tform([
       checkbox({ name: "values[]", value: "bar" }),
@@ -139,7 +139,7 @@ test('with name="leaf[]" - all empty and single leaf', t => {
   );
 });
 
-test('multiple with name="leaf"', t => {
+test('multiple with name="leaf"', (t) => {
   t.deepEqual(
     tform([
       input({ name: "name", value: "foo" }),
@@ -151,7 +151,7 @@ test('multiple with name="leaf"', t => {
   );
 });
 
-test('multiple with name="leaf" - empty', t => {
+test('multiple with name="leaf" - empty', (t) => {
   t.deepEqual(
     tform([
       input({ name: "name", value: "foo" }),
@@ -163,7 +163,7 @@ test('multiple with name="leaf" - empty', t => {
   );
 });
 
-test("miltiple with no name and no value", t => {
+test("miltiple with no name and no value", (t) => {
   t.deepEqual(
     tform([checkbox(), checkbox(), checkbox()]),
     [false, false, false],
@@ -171,7 +171,7 @@ test("miltiple with no name and no value", t => {
   );
 });
 
-test('multiple with name="leaf" and no value', t => {
+test('multiple with name="leaf" and no value', (t) => {
   t.deepEqual(
     tform([
       input({ name: "name", value: "booleans" }),

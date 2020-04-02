@@ -8,7 +8,7 @@ import { checkbox, input, option, select, tform } from "./utils.js";
 
 browserEnv(["File", "FileList", "FileReader", "btoa", "navigator"]);
 
-test("Example 1: Basic Keys", t => {
+test("Example 1: Basic Keys", (t) => {
   t.deepEqual(
     tform([
       input({ name: "name", value: "Bender" }),
@@ -22,7 +22,7 @@ test("Example 1: Basic Keys", t => {
   );
 });
 
-test("Example 2: Multiple Values", t => {
+test("Example 2: Multiple Values", (t) => {
   t.deepEqual(
     tform([
       input({ type: "number", name: "bottle-on-wall", value: "1" }),
@@ -33,7 +33,7 @@ test("Example 2: Multiple Values", t => {
   );
 });
 
-test("Example 3: Deeper Structure", t => {
+test("Example 3: Deeper Structure", (t) => {
   t.deepEqual(
     tform([
       input({ name: "pet[species]", value: "Dahut" }),
@@ -51,7 +51,7 @@ test("Example 3: Deeper Structure", t => {
   );
 });
 
-test("Example 4: Sparse Arrays", t => {
+test("Example 4: Sparse Arrays", (t) => {
   t.deepEqual(
     tform([
       input({ name: "hearbeat[0]", value: "thunk" }),
@@ -61,7 +61,7 @@ test("Example 4: Sparse Arrays", t => {
   );
 });
 
-test("Example 5: Even Deeper", t => {
+test("Example 5: Even Deeper", (t) => {
   t.deepEqual(
     tform([
       input({ name: "pet[0][species]", value: "Dahut" }),
@@ -78,7 +78,7 @@ test("Example 5: Even Deeper", t => {
   );
 });
 
-test("Example 6: Such Deep", t => {
+test("Example 6: Such Deep", (t) => {
   t.deepEqual(
     tform([
       input({ name: "wow[such][deep][3][much][power][!]", value: "Amaze" }),
@@ -93,7 +93,7 @@ test("Example 6: Such Deep", t => {
   );
 });
 
-test("Example 7: Merge Behaviour", t => {
+test("Example 7: Merge Behaviour", (t) => {
   t.deepEqual(
     tform([
       input({ name: "mix", value: "scalar" }),
@@ -114,13 +114,13 @@ test("Example 7: Merge Behaviour", t => {
   );
 });
 
-test("Example 8: Append", t => {
+test("Example 8: Append", (t) => {
   t.deepEqual(tform([input({ name: "highlander[]", value: "one" })]), {
     highlander: ["one"],
   });
 });
 
-test("Example 9: Files", async t => {
+test("Example 9: Files", async (t) => {
   const fileInput = input({ type: "file", name: "file", multiple: true });
 
   {
@@ -160,7 +160,7 @@ test("Example 9: Files", async t => {
   // JSDOM implements FilerReader#readAsDataURL() differently from
   // all the browsers. Until that is fixed, we need this spoof
   if (navigator.userAgent.match(/jsdom\/1[1-3]\.\d+\.\d+$/)) {
-    result.file.forEach(file => {
+    result.file.forEach((file) => {
       const { body } = file;
       // eslint-disable-next-line no-param-reassign
       file.body = btoa(body);
@@ -184,7 +184,7 @@ test("Example 9: Files", async t => {
   });
 });
 
-test("Example 10: Bad Input", t => {
+test("Example 10: Bad Input", (t) => {
   t.deepEqual(
     tform([
       input({ name: "error[good]", value: "BOOM!" }),

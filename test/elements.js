@@ -16,7 +16,7 @@ import {
 
 const loremIpsum = "Lorem ipsum dolar sit amet";
 
-test('<input type="radio">', t => {
+test('<input type="radio">', (t) => {
   t.deepEqual(
     tform([
       input({ type: "radio", name: "radio", value: "1" }),
@@ -27,7 +27,7 @@ test('<input type="radio">', t => {
   );
 });
 
-test("<select>", t => {
+test("<select>", (t) => {
   t.is(
     tform([
       select([option("foo"), option({ selected: true }, "bar"), option("baz")]),
@@ -36,7 +36,7 @@ test("<select>", t => {
   );
 });
 
-test("<select value>", t => {
+test("<select value>", (t) => {
   t.deepEqual(
     tform([
       select({ name: "select" }, [
@@ -50,7 +50,7 @@ test("<select value>", t => {
   );
 });
 
-test("<select multible>", t => {
+test("<select multible>", (t) => {
   t.deepEqual(
     tform([
       select({ multiple: true }, [
@@ -63,7 +63,7 @@ test("<select multible>", t => {
   );
 });
 
-test("<select multible> - empty", t => {
+test("<select multible> - empty", (t) => {
   t.deepEqual(
     tform([
       select({ multiple: true }, [option("foo"), option("bar"), option("baz")]),
@@ -72,17 +72,17 @@ test("<select multible> - empty", t => {
   );
 });
 
-test('<input type="file"> - empty', async t => {
+test('<input type="file"> - empty', async (t) => {
   // We are not able to test real file inputs in real browsers.
   const files = await tform([input({ type: "file", multiple: true })]);
   t.deepEqual(files, []);
 });
 
-test("<textarea>", t => {
+test("<textarea>", (t) => {
   t.is(tform([textarea(loremIpsum)]), loremIpsum, "Textarea");
 });
 
-test("<textarea name>", t => {
+test("<textarea name>", (t) => {
   t.deepEqual(
     tform([textarea({ name: "text" }, loremIpsum)]),
     { text: loremIpsum },
@@ -90,7 +90,7 @@ test("<textarea name>", t => {
   );
 });
 
-test("<input form>", t => {
+test("<input form>", (t) => {
   t.plan(1);
 
   const form0 = form({ id: "form-0" }, [

@@ -3,7 +3,7 @@ import test from "ava";
 import formsquare from "../src/formsquare.js";
 import { crel, form, input } from "./utils.js";
 
-test("simple object", t => {
+test("simple object", (t) => {
   t.deepEqual(
     formsquare.parse(
       crel("div", [
@@ -15,7 +15,7 @@ test("simple object", t => {
   );
 });
 
-test("merge arrays cross forms", t => {
+test("merge arrays cross forms", (t) => {
   t.deepEqual(
     formsquare.parse(
       crel("div", [
@@ -27,7 +27,7 @@ test("merge arrays cross forms", t => {
   );
 });
 
-test("an array of forms", t => {
+test("an array of forms", (t) => {
   t.deepEqual(
     formsquare.parse([
       form([input({ name: "foo", value: "bar" })]),

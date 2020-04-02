@@ -20,13 +20,13 @@ function newFormsquare({
   const formsquare: any = Object.create(null);
 
   Object.defineProperty(formsquare, "filter", {
-    value(p: HTMLElement => boolean): Formsquare {
+    value(p: (HTMLElement) => boolean): Formsquare {
       return newFormsquare({ filters: [...filters, p], maps });
     },
   });
 
   Object.defineProperty(formsquare, "map", {
-    value(p: Function => any): Formsquare {
+    value(p: (Function) => any): Formsquare {
       return newFormsquare({ maps: [...maps, p], filters });
     },
   });

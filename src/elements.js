@@ -19,7 +19,7 @@ export function formElements(form) {
   // Polyfill for browsers that don't support html5 form attribute.
   const outside = document.querySelectorAll(`[form="${form.id}"]`);
   const inside = filter(
-    el => contains(el.getAttribute("form"), ["", null, form.id]),
+    (el) => contains(el.getAttribute("form"), ["", null, form.id]),
     elements,
   );
 

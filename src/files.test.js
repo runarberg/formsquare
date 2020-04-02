@@ -5,7 +5,7 @@ import { readFile } from "./files.js";
 
 browserEnv(["window", "File", "FileReader", "btoa", "navigator"]);
 
-test("readfile", async t => {
+test("readfile", async (t) => {
   const file = await readFile(
     new File(["foo"], "foo.txt", { type: "text/plain" }),
   );
