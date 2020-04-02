@@ -40,23 +40,23 @@ const formsquare = require("formsquare");
 
 #### HTML
 
-Download the [full script][full-script] or [minified script][min-script]
+Download the [full script][script-full] or [minified script][script-min]
 and include this in your HTML file:
 
 ```html
 <script src="formsquare.js"></script>
 <script>
-  // use `formsquare` below.
+  formsquare.parse(document.forms[0]);
 </script>
 ```
 
-Or download the [module][full-module] and import it:
+Or download the [module][module-full] and import it:
 
 ```html
 <script module>
   import formsquare from "/path/to/module/formsquare.js";
 
-  // Use `formsquare` below.
+  formsquare.parse(document.forms[0]);
 </script>
 ```
 
@@ -300,8 +300,9 @@ any of these:
 * [form-serializer](https://www.npmjs.com/package/form-serializer)
 * [get-form-data](https://www.npmjs.com/package/get-form-data)
 
-[full-code]: https://raw.githubusercontent.com/runarberg/formsquare/dist/dist/formsquare.js
-[minified-code]: https://raw.githubusercontent.com/runarberg/formsquare/dist/dist/formsquare.min.js
+[module-full]: https://cdn.jsdelivr.net/npm/formsquare/dist/module/formsquare.js
+[script-full]: https://cdn.jsdelivr.net/npm/formsquare/dist/iife/formsquare.js
+[script-min]: https://cdn.jsdelivr.net/npm/formsquare/dist/iife/formsquare.min.js
 
 [caniuse#form-attribute]: http://caniuse.com/#feat=form-attribute
 [mdn/input#attr-form]: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-form
