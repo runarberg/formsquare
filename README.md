@@ -1,3 +1,7 @@
+**DEPRECATED**
+
+⛔️ No longer maintained.
+
 [![npm](https://img.shields.io/npm/v/formsquare.svg)](https://www.npmjs.com/package/formsquare)
 [![Build Status](https://travis-ci.org/runarberg/formsquare.svg?branch=master)](https://travis-ci.org/runarberg/formsquare)
 [![Coverage Status](https://coveralls.io/repos/github/runarberg/formsquare/badge.svg)](https://coveralls.io/github/runarberg/formsquare)
